@@ -53,6 +53,13 @@ body {
   to { transform: rotate(360deg); }
 }
 
+/* 空状态图标 */
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
 /* 表单通用样式 */
 .form-group {
   display: flex;

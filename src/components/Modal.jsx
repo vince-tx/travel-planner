@@ -1,9 +1,39 @@
+import { useState, useEffect, useRef } from 'react';
 import './Modal.css';
 
 export default function Modal({ isOpen, title, onClose, children }) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
+  const [animating, setAnimating] = useState(false);
+  const overlayRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setMounted(true);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setAnimating(true);
+        });
+      });
+    } else if (mounted) {
+      setAnimating(false);
+    }
+  }, [isOpen]);
+
+  const handleTransitionEnd = () => {
+    if (!animating) {
+      setMounted(false);
+    }
+  };
+
+  if (!mounted) return null;
+
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div
+      ref={overlayRef}
+      className={`modal-overlay ${animating ? 'open' : ''}`}
+      onClick={onClose}
+      onTransitionEnd={handleTransitionEnd}
+    >
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{title}</h3>
