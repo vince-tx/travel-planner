@@ -1,0 +1,17 @@
+.fab-container { position: fixed; bottom: 24px; right: 24px; z-index: 50; }
+.fab {
+  width: 56px; height: 56px; border-radius: 28px; border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff; font-size: 28px; font-weight: 300; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4); transition: all 0.3s;
+}
+.fab:hover { transform: scale(1.05); }
+.fab-container.open .fab { transform: rotate(45deg); }
+.fab-menu { position: absolute; bottom: 70px; right: 0; display: flex; flex-direction: column; gap: 8px; }
+.fab-option {
+  display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+  border: none; background: #fff; border-radius: 12px; font-size: 14px;
+  color: #1a1a1a; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  white-space: nowrap; transition: all 0.2s;
+}
+.fab-option:hover { background: #f5f5f5; }
