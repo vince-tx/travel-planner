@@ -1,2 +1,5 @@
 .trip-page { display: flex; flex-direction: column; height: 100%; background: #faf9f7; }
 .trip-page-content { flex: 1; overflow: auto; padding: 16px; padding-bottom: 100px; }
+
+/* ===== 深色模式 ===== */
+.dark .trip-page { background: #0f0f14; }

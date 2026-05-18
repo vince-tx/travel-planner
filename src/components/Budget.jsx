@@ -121,6 +121,7 @@ export default function Budget({ tripId, onRefresh }) {
                   <div className="inline-expense-form">
                     <input
                       type="number"
+                      inputMode="decimal"
                       value={expenseAmount}
                       onChange={e => setExpenseAmount(e.target.value)}
                       placeholder="金额"
@@ -160,6 +161,7 @@ export default function Budget({ tripId, onRefresh }) {
           <div className="form-group">
             <input
               type="number"
+              inputMode="decimal"
               value={newBudget}
               onChange={e => setNewBudget(e.target.value)}
               placeholder="预算金额"

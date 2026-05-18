@@ -1,13 +1,22 @@
+import { useState } from 'react';
+import SettingsPanel from './SettingsPanel';
 import './Header.css';
 
 export default function Header({ tripName, onMenuClick, onBack }) {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   return (
-    <header className="header">
-      <button className="header-menu-btn" onClick={onBack || onMenuClick}>
-        {onBack ? '←' : '☰'}
-      </button>
-      <h1 className="header-title">{tripName || '选择旅行'}</h1>
-      <div className="header-spacer" />
-    </header>
+    <>
+      <header className="header">
+        <button className="header-menu-btn" onClick={onBack || onMenuClick}>
+          {onBack ? '←' : '☰'}
+        </button>
+        <h1 className="header-title">{tripName || '选择旅行'}</h1>
+        <button className="header-settings-btn" onClick={() => setSettingsOpen(true)}>
+          ⚙
+        </button>
+      </header>
+      <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+    </>
   );
 }

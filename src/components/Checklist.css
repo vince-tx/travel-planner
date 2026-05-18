@@ -1,84 +1,124 @@
 .checklist { padding-bottom: 100px; }
-.checklist-progress { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
-.progress-info { display: flex; justify-content: space-between; font-size: 14px; color: #666; margin-bottom: 8px; }
-.progress-bar-bg { height: 8px; background: #f0f0f0; border-radius: 4px; overflow: hidden; }
-.progress-bar-fill { height: 100%; background: linear-gradient(90deg, #667eea, #10b981); border-radius: 4px; transition: width 0.3s; }
-.checklist-empty { text-align: center; padding: 60px 20px; color: #888; }
-.checklist-category { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
-.category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
-.category-name { font-size: 14px; font-weight: 600; color: #667eea; }
-.category-count { font-size: 12px; color: #888; }
-.category-items { display: flex; flex-direction: column; gap: 8px; }
-.checklist-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
-.checklist-item.checked .item-name { text-decoration: line-through; color: #aaa; }
+
+.checklist-progress {
+  background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+.progress-info { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: #888; margin-bottom: 10px; }
+.progress-bar-bg { height: 6px; background: #f0eeeb; border-radius: 3px; overflow: hidden; }
+.progress-bar-fill {
+  height: 100%; background: linear-gradient(90deg, #667eea, #10b981);
+  border-radius: 3px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.checklist-empty { text-align: center; padding: 80px 20px; color: #aaa; }
+
+.checklist-category {
+  background: #fff; border-radius: 20px; padding: 18px 20px; margin-bottom: 14px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+.category-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.category-name { font-size: 14px; font-weight: 700; color: #667eea; letter-spacing: 0.01em; }
+.category-count { font-size: 12px; color: #aaa; font-weight: 500; }
+.category-items { display: flex; flex-direction: column; gap: 4px; }
+.checklist-item { display: flex; align-items: center; gap: 14px; padding: 10px 0; }
+.checklist-item.checked .item-name { text-decoration: line-through; color: #c0c0c0; }
+
 .checkbox-container { position: relative; width: 22px; height: 22px; cursor: pointer; }
 .checkbox-container input { opacity: 0; width: 0; height: 0; }
-.checkmark { position: absolute; top: 0; left: 0; width: 22px; height: 22px; border: 2px solid #ddd; border-radius: 6px; transition: all 0.2s; }
-.checkbox-container input:checked ~ .checkmark { background: linear-gradient(135deg, #667eea, #764ba2); border-color: transparent; }
-.checkmark::after { content: ''; position: absolute; display: none; left: 7px; top: 3px; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.checkmark {
+  position: absolute; top: 0; left: 0; width: 22px; height: 22px;
+  border: 2px solid #d5d2cd; border-radius: 7px; transition: all 0.2s;
+}
+.checkbox-container input:checked ~ .checkmark {
+  background: linear-gradient(135deg, #667eea, #764ba2); border-color: transparent;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.25);
+}
+.checkmark::after {
+  content: ''; position: absolute; display: none;
+  left: 7px; top: 3px; width: 5px; height: 10px;
+  border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
 .checkbox-container input:checked ~ .checkmark::after { display: block; }
-.item-name { flex: 1; font-size: 14px; color: #1a1a1a; }
-.item-delete { width: 24px; height: 24px; border: none; background: #fee; color: #e74c3c; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.item-name { flex: 1; font-size: 14px; color: #1a1a1a; transition: color 0.2s; }
+.item-delete {
+  width: 26px; height: 26px; border: none;
+  background: rgba(231, 76, 60, 0.08); color: #e74c3c;
+  border-radius: 7px; cursor: pointer; font-size: 14px;
+  transition: all 0.2s;
+}
+.item-delete:hover { background: rgba(231, 76, 60, 0.15); }
 
 /* Modal form styles */
-.modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.modal-form .form-group {
-  flex: 1;
-}
+.modal-form { display: flex; flex-direction: column; gap: 16px; }
+.modal-form .form-group { flex: 1; }
 
 .modal-select,
 .modal-input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #e5e5e5;
-  border-radius: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  box-sizing: border-box;
-  transition: border-color 0.2s;
-  background: #faf9f7;
+  width: 100%; padding: 12px 14px;
+  border: 1px solid #e0ddd8; border-radius: 12px;
+  font-size: 14px; font-family: inherit;
+  box-sizing: border-box; transition: all 0.2s;
+  background: #f8f7f5; color: #1a1a1a;
 }
-
 .modal-select:focus,
 .modal-input:focus {
-  outline: none;
-  border-color: #667eea;
-  background: #fff;
+  outline: none; border-color: #667eea; background: #fff;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .modal-submit-btn {
-  width: 100%;
-  padding: 14px;
-  border: none;
+  width: 100%; padding: 14px; border: none;
   background: linear-gradient(135deg, #667eea, #764ba2);
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  color: #fff; font-size: 15px; font-weight: 600; border-radius: 12px;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.3);
 }
-
-.modal-submit-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.modal-submit-btn:active {
-  transform: translateY(0);
-}
+.modal-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35); }
+.modal-submit-btn:active { transform: translateY(0); }
 
 .add-item-btn {
   position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%);
-  padding: 14px 32px; border: none;
+  padding: 14px 36px; border: none;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff; font-size: 16px; font-weight: 600; border-radius: 28px;
-  cursor: pointer; box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
-  z-index: 50;
+  cursor: pointer; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.35);
+  z-index: 50; transition: all 0.25s;
 }
+.add-item-btn:hover { transform: translateX(-50%) translateY(-2px); box-shadow: 0 6px 24px rgba(102, 126, 234, 0.4); }
+.add-item-btn:active { transform: translateX(-50%) translateY(0); }
+
+/* ===== 深色模式 ===== */
+.dark .checklist-progress {
+  background: #1a1a24; border-color: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+.dark .progress-info { color: #666; }
+.dark .progress-bar-bg { background: #2a2a35; }
+.dark .checklist-empty { color: #555; }
+.dark .checklist-category {
+  background: #1a1a24; border-color: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+.dark .category-header { border-bottom-color: rgba(255, 255, 255, 0.05); }
+.dark .category-name { color: #8b9cf7; }
+.dark .category-count { color: #555; }
+.dark .checklist-item.checked .item-name { color: #444; }
+.dark .checkmark { border-color: #3a3a45; }
+.dark .checkbox-container input:checked ~ .checkmark {
+  background: linear-gradient(135deg, #5a6bd6, #8b5fbf);
+  box-shadow: 0 2px 6px rgba(90, 107, 214, 0.2);
+}
+.dark .item-name { color: #e8e8ed; }
+.dark .item-delete { background: rgba(248, 113, 113, 0.1); color: #f87171; }
+.dark .item-delete:hover { background: rgba(248, 113, 113, 0.18); }
+
+.dark .modal-select,
+.dark .modal-input { background: #14141c; border-color: #2a2a35; color: #e8e8ed; }
+.dark .modal-select:focus,
+.dark .modal-input:focus { border-color: #8b9cf7; background: #1a1a24; box-shadow: 0 0 0 3px rgba(139, 156, 247, 0.1); }

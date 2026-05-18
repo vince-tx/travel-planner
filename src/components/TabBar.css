@@ -1,14 +1,29 @@
-.tab-bar { display: flex; background: #fff; border-top: 1px solid #f0f0f0; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
+.tab-bar {
+  display: flex; background: rgba(255, 255, 255, 0.85);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  padding-bottom: env(safe-area-inset-bottom);
+}
 .tab-item {
   flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 14px 0; border: none; background: none; color: #888;
-  font-size: 16px; cursor: pointer; position: relative;
+  padding: 12px 0; border: none; background: none; color: #aaa;
+  font-size: 14px; font-weight: 500; cursor: pointer; position: relative;
+  transition: color 0.2s;
 }
 .tab-item::after {
   content: ''; position: absolute; top: 0; left: 50%;
-  transform: translateX(-50%); width: 0; height: 2px;
-  background: #667eea; transition: width 0.2s;
+  transform: translateX(-50%); width: 0; height: 2.5px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 0 0 2px 2px;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.tab-item.active { color: #667eea; }
-.tab-item.active::after { width: 40px; }
+.tab-item.active { color: #667eea; font-weight: 600; }
+.tab-item.active::after { width: 32px; }
 .tab-icon { font-size: 18px; }
+
+/* ===== 深色模式 ===== */
+.dark .tab-bar { background: rgba(26, 26, 36, 0.85); border-top-color: rgba(255, 255, 255, 0.05); }
+.dark .tab-item { color: #555; }
+.dark .tab-item.active { color: #8b9cf7; }
+.dark .tab-item::after { background: linear-gradient(90deg, #8b9cf7, #a78bfa); }

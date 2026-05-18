@@ -1,22 +1,33 @@
 .confirm-overlay {
-  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5);
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45);
   display: flex; align-items: center; justify-content: center; z-index: 300;
 }
 .confirm-dialog {
-  background: #fff; border-radius: 16px; padding: 24px; width: 90%;
-  max-width: 320px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  background: #fff; border-radius: 20px; padding: 28px; width: 90%;
+  max-width: 320px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
-.confirm-title { font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
-.confirm-message { font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 20px; }
-.confirm-actions { display: flex; gap: 12px; }
+.confirm-title { font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 10px; letter-spacing: -0.01em; }
+.confirm-message { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 24px; }
+.confirm-actions { display: flex; gap: 10px; }
 .confirm-cancel {
-  flex: 1; padding: 12px; border: 1px solid #ddd; background: #fff;
-  border-radius: 10px; font-size: 14px; color: #666; cursor: pointer;
+  flex: 1; padding: 12px; border: 1px solid rgba(0, 0, 0, 0.08); background: #fff;
+  border-radius: 12px; font-size: 14px; font-weight: 500; color: #666; cursor: pointer;
+  transition: all 0.2s;
 }
-.confirm-cancel:hover { background: #f5f5f5; }
+.confirm-cancel:hover { background: #f8f8f8; }
 .confirm-ok {
   flex: 1; padding: 12px; border: none;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;
+  color: #fff; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.25);
+  transition: all 0.2s;
 }
-.confirm-ok:hover { opacity: 0.9; }
+.confirm-ok:hover { opacity: 0.92; transform: translateY(-1px); }
+
+/* ===== 深色模式 ===== */
+.dark .confirm-overlay { background: rgba(0, 0, 0, 0.65); }
+.dark .confirm-dialog { background: #1a1a24; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); }
+.dark .confirm-title { color: #e8e8ed; }
+.dark .confirm-message { color: #a0a0b0; }
+.dark .confirm-cancel { background: #1a1a24; border-color: rgba(255, 255, 255, 0.08); color: #a0a0b0; }
+.dark .confirm-cancel:hover { background: #22222e; }

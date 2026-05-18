@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { initDatabase } from './db/database';
 import { getAllTrips } from './db/trips';
+import { ThemeProvider } from './context/ThemeContext';
 import Sidebar from './components/Sidebar';
 import TripList from './pages/TripList';
 import TripPage from './pages/TripPage';
@@ -37,6 +38,7 @@ export default function App() {
   }
 
   return (
+    <ThemeProvider>
     <div className="app">
       <Sidebar
         isOpen={sidebarOpen}
@@ -52,5 +54,6 @@ export default function App() {
         )}
       </main>
     </div>
+    </ThemeProvider>
   );
 }

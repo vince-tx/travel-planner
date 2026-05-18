@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { getAllTrips, createTrip, deleteTrip } from '../db/trips';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
+import SettingsPanel from '../components/SettingsPanel';
 import './TripList.css';
 
 const hasFormData = (data) => data.name || data.destination || data.startDate || data.endDate;
@@ -12,6 +13,7 @@ export default function TripList({ onSelectTrip }) {
   const [formData, setFormData] = useState({ name: '', destination: '', startDate: '', endDate: '' });
   const [confirm, setConfirm] = useState({ open: false, id: null });
   const [discardConfirm, setDiscardConfirm] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const dirtyRef = useRef(false);
 
   const loadTrips = () => setTrips(getAllTrips());
@@ -66,7 +68,10 @@ export default function TripList({ onSelectTrip }) {
   return (
     <div className="trip-list-page">
       <div className="trip-list-header">
-        <h1>我的旅行</h1>
+        <div className="trip-list-header-row">
+          <h1>我的旅行</h1>
+          <button className="trip-list-settings-btn" onClick={() => setSettingsOpen(true)}>⚙</button>
+        </div>
         <p>{trips.length} 趟旅行计划中</p>
       </div>
 
@@ -132,6 +137,7 @@ export default function TripList({ onSelectTrip }) {
         onConfirm={discardForm}
         onCancel={() => setDiscardConfirm(false)}
       />
+      <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   );
 }
