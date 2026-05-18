@@ -1,0 +1,22 @@
+.budget { padding-bottom: 20px; }
+.budget-summary { display: flex; background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
+.summary-item { flex: 1; text-align: center; }
+.summary-label { display: block; font-size: 12px; color: #888; margin-bottom: 4px; }
+.summary-value { font-size: 18px; font-weight: 600; color: #10b981; }
+.summary-value.spent { color: #f59e0b; }
+.summary-value.overspent { color: #ef4444; }
+.budget-empty { text-align: center; padding: 60px 20px; color: #888; }
+.budget-empty button { margin-top: 16px; padding: 12px 24px; border: none; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border-radius: 10px; cursor: pointer; }
+.budget-list { display: flex; flex-direction: column; gap: 12px; }
+.budget-item { background: #fff; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
+.budget-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.budget-category { font-size: 14px; font-weight: 600; color: #10b981; }
+.budget-delete { width: 24px; height: 24px; border: none; background: #fee; color: #e74c3c; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.budget-item-row { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 8px; }
+.budget-progress-bg { height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+.budget-progress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 3px; transition: width 0.3s; }
+.budget-progress-fill.over { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+.add-expense-btn { width: 100%; padding: 10px; border: 1px dashed #10b981; background: none; color: #10b981; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+.add-expense-btn:hover { background: #f0fdf4; }
+.add-budget-btn { display: block; width: 100%; margin-top: 16px; padding: 14px; border: none; background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-size: 14px; font-weight: 600; border-radius: 12px; cursor: pointer; }
+.expense-form input { width: 100%; padding: 16px; border: 1px solid #ddd; border-radius: 10px; font-size: 18px; text-align: center; }
