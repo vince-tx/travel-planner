@@ -3,34 +3,36 @@ import { getDb, saveDatabase } from './database';
 export function getItinerariesByTripId(tripId) {
   const db = getDb();
   if (!db) return [];
-  const result = db.exec(`SELECT * FROM itineraries WHERE trip_id = ${tripId} ORDER BY date ASC, time ASC`);
-  if (!result.length) return [];
-  return result[0].values.map(row => ({
-    id: row[0], tripId: row[1], date: row[2], time: row[3],
-    title: row[4], location: row[5], notes: row[6]
-  }));
+  return (db.itineraries || [])
+    .filter(i => i.tripId === tripId)
+    .sort((a, b) => {
+      if (a.date !== b.date) return a.date.localeCompare(b.date);
+      return (a.time || '').localeCompare(b.time || '');
+    });
 }
 
 export function createItinerary(item) {
   const db = getDb();
   if (!db) return null;
-  db.run('INSERT INTO itineraries (trip_id, date, time, title, location, notes) VALUES (?, ?, ?, ?, ?, ?)',
-    [item.tripId, item.date, item.time, item.title, item.location, item.notes]);
+  const id = Date.now();
+  db.itineraries.push({ id, ...item });
   saveDatabase();
-  return db.exec('SELECT last_insert_rowid()')[0].values[0][0];
+  return id;
 }
 
 export function updateItinerary(id, item) {
   const db = getDb();
   if (!db) return;
-  db.run('UPDATE itineraries SET date = ?, time = ?, title = ?, location = ?, notes = ? WHERE id = ?',
-    [item.date, item.time, item.title, item.location, item.notes, id]);
-  saveDatabase();
+  const index = db.itineraries.findIndex(i => i.id === id);
+  if (index !== -1) {
+    db.itineraries[index] = { ...db.itineraries[index], ...item };
+    saveDatabase();
+  }
 }
 
 export function deleteItinerary(id) {
   const db = getDb();
   if (!db) return;
-  db.run('DELETE FROM itineraries WHERE id = ?', [id]);
+  db.itineraries = db.itineraries.filter(i => i.id !== id);
   saveDatabase();
 }

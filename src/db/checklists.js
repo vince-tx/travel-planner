@@ -3,32 +3,36 @@ import { getDb, saveDatabase } from './database';
 export function getChecklistsByTripId(tripId) {
   const db = getDb();
   if (!db) return [];
-  const result = db.exec(`SELECT * FROM checklists WHERE trip_id = ${tripId} ORDER BY category ASC, id ASC`);
-  if (!result.length) return [];
-  return result[0].values.map(row => ({
-    id: row[0], tripId: row[1], category: row[2], item: row[3], checked: row[4] === 1
-  }));
+  return (db.checklists || [])
+    .filter(c => c.tripId === tripId)
+    .sort((a, b) => {
+      if (a.category !== b.category) return a.category.localeCompare(b.category);
+      return a.id - b.id;
+    });
 }
 
 export function createChecklistItem(item) {
   const db = getDb();
   if (!db) return null;
-  db.run('INSERT INTO checklists (trip_id, category, item, checked) VALUES (?, ?, ?, ?)',
-    [item.tripId, item.category, item.item, item.checked ? 1 : 0]);
+  const id = Date.now();
+  db.checklists.push({ id, ...item, checked: false });
   saveDatabase();
-  return db.exec('SELECT last_insert_rowid()')[0].values[0][0];
+  return id;
 }
 
 export function toggleChecklistItem(id, checked) {
   const db = getDb();
   if (!db) return;
-  db.run('UPDATE checklists SET checked = ? WHERE id = ?', [checked ? 1 : 0, id]);
-  saveDatabase();
+  const item = db.checklists.find(c => c.id === id);
+  if (item) {
+    item.checked = checked;
+    saveDatabase();
+  }
 }
 
 export function deleteChecklistItem(id) {
   const db = getDb();
   if (!db) return;
-  db.run('DELETE FROM checklists WHERE id = ?', [id]);
+  db.checklists = db.checklists.filter(c => c.id !== id);
   saveDatabase();
 }
