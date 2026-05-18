@@ -1,14 +1,14 @@
-.tab-bar { display: flex; background: #fff; border-bottom: 1px solid #f0f0f0; }
+.tab-bar { display: flex; background: #fff; border-top: 1px solid #f0f0f0; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
 .tab-item {
   flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
   padding: 14px 0; border: none; background: none; color: #888;
-  font-size: 14px; cursor: pointer; position: relative;
+  font-size: 16px; cursor: pointer; position: relative;
 }
 .tab-item::after {
-  content: ''; position: absolute; bottom: 0; left: 50%;
+  content: ''; position: absolute; top: 0; left: 50%;
   transform: translateX(-50%); width: 0; height: 2px;
   background: #667eea; transition: width 0.2s;
 }
 .tab-item.active { color: #667eea; }
 .tab-item.active::after { width: 40px; }
-.tab-icon { font-size: 16px; }
+.tab-icon { font-size: 18px; }
