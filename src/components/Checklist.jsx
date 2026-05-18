@@ -1,24 +1,18 @@
-import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { getChecklistsByTripId, createChecklistItem, toggleChecklistItem, deleteChecklistItem } from '../db/checklists';
-import Modal from './Modal';
 import ConfirmDialog from './ConfirmDialog';
+import Modal from './Modal';
 import './Checklist.css';
 
 const DEFAULT_CATEGORIES = ['衣物', '证件', '洗漱', '电子设备', '药品', '其他'];
 
-const Checklist = forwardRef(function Checklist({ tripId, onRefresh }, ref) {
+export default function Checklist({ tripId, onRefresh }) {
   const [items, setItems] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState('衣物');
   const [customCategory, setCustomCategory] = useState('');
   const [itemName, setItemName] = useState('');
   const [confirm, setConfirm] = useState({ open: false, id: null });
-  const [discardConfirm, setDiscardConfirm] = useState(false);
-  const dirtyRef = useRef(false);
-
-  useImperativeHandle(ref, () => ({
-    openAddModal: () => { setCategory(''); setCustomCategory(''); setItemName(''); dirtyRef.current = false; setShowModal(true); }
-  }));
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => { setItems(getChecklistsByTripId(tripId)); }, [tripId]);
 
@@ -38,11 +32,35 @@ const Checklist = forwardRef(function Checklist({ tripId, onRefresh }, ref) {
     const finalCategory = category === 'custom' ? customCategory : category;
     if (!finalCategory || !itemName) return;
     createChecklistItem({ tripId, category: finalCategory, item: itemName, checked: false });
-    setCategory(''); setCustomCategory(''); setItemName('');
-    dirtyRef.current = false;
-    setShowModal(false);
+    setItemName('');
+    if (category === 'custom') setCustomCategory('');
     setItems(getChecklistsByTripId(tripId));
     onRefresh?.();
+  };
+
+  const handleOpenModal = () => {
+    setCategory('衣物');
+    setCustomCategory('');
+    setItemName('');
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setItemName('');
+    setCustomCategory('');
+  };
+
+  const handleModalSubmit = (e) => {
+    e.preventDefault();
+    const finalCategory = category === 'custom' ? customCategory : category;
+    if (!finalCategory || !itemName) return;
+    createChecklistItem({ tripId, category: finalCategory, item: itemName, checked: false });
+    setItemName('');
+    if (category === 'custom') setCustomCategory('');
+    setItems(getChecklistsByTripId(tripId));
+    onRefresh?.();
+    handleCloseModal();
   };
 
   const handleToggle = (id, checked) => {
@@ -62,21 +80,6 @@ const Checklist = forwardRef(function Checklist({ tripId, onRefresh }, ref) {
     onRefresh?.();
   };
 
-  const handleCloseModal = () => {
-    if (dirtyRef.current && (category || customCategory || itemName)) {
-      setDiscardConfirm(true);
-    } else {
-      setShowModal(false);
-    }
-  };
-
-  const discardForm = () => {
-    setDiscardConfirm(false);
-    dirtyRef.current = false;
-    setCategory(''); setCustomCategory(''); setItemName('');
-    setShowModal(false);
-  };
-
   return (
     <div className="checklist">
       <div className="checklist-progress">
@@ -93,7 +96,6 @@ const Checklist = forwardRef(function Checklist({ tripId, onRefresh }, ref) {
         <div className="checklist-empty">
           <div className="empty-icon">📋</div>
           <p>还没有清单</p>
-          <button onClick={() => { setCategory(''); setCustomCategory(''); setItemName(''); dirtyRef.current = false; setShowModal(true); }}>添加物品</button>
         </div>
       ) : (
         Object.entries(groupedByCategory).map(([cat, catItems]) => (
@@ -118,29 +120,49 @@ const Checklist = forwardRef(function Checklist({ tripId, onRefresh }, ref) {
         ))
       )}
 
-      <Modal isOpen={showModal} title="添加物品" onClose={handleCloseModal}>
-        <form onSubmit={handleSubmit} className="checklist-form">
+      <Modal
+        isOpen={modalOpen}
+        title="添加物品"
+        onClose={handleCloseModal}
+      >
+        <form onSubmit={handleModalSubmit} className="modal-form">
           <div className="form-group">
-            <label>分类</label>
-            <select value={category} onChange={e => { setCategory(e.target.value); dirtyRef.current = true; }} required>
-              <option value="">选择分类</option>
+            <select
+              value={category}
+              onChange={e => setCategory(e.target.value)}
+              className="modal-select"
+            >
               {DEFAULT_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-              <option value="custom">+ 自定义分类</option>
+              <option value="custom">自定义</option>
             </select>
           </div>
           {category === 'custom' && (
             <div className="form-group">
-              <label>自定义分类名称</label>
-              <input type="text" value={customCategory} onChange={e => { setCustomCategory(e.target.value); dirtyRef.current = true; }} placeholder="如：户外装备" required />
+              <input
+                type="text"
+                value={customCategory}
+                onChange={e => setCustomCategory(e.target.value)}
+                placeholder="自定义分类名称"
+                required
+                className="modal-input"
+              />
             </div>
           )}
           <div className="form-group">
-            <label>物品名称</label>
-            <input type="text" value={itemName} onChange={e => { setItemName(e.target.value); dirtyRef.current = true; }} placeholder="如：护照" required />
+            <input
+              type="text"
+              value={itemName}
+              onChange={e => setItemName(e.target.value)}
+              placeholder="物品名称"
+              required
+              className="modal-input"
+            />
           </div>
-          <button type="submit" className="submit-btn">添加</button>
+          <button type="submit" className="modal-submit-btn">添加</button>
         </form>
       </Modal>
+
+      <button className="add-item-btn" onClick={handleOpenModal}>+ 添加物品</button>
 
       <ConfirmDialog
         isOpen={confirm.open}
@@ -149,15 +171,6 @@ const Checklist = forwardRef(function Checklist({ tripId, onRefresh }, ref) {
         onConfirm={confirmDelete}
         onCancel={() => setConfirm({ open: false, id: null })}
       />
-      <ConfirmDialog
-        isOpen={discardConfirm}
-        title="放弃编辑"
-        message="表单中有未保存的内容，确定要放弃吗？"
-        onConfirm={discardForm}
-        onCancel={() => setDiscardConfirm(false)}
-      />
     </div>
   );
-});
-
-export default Checklist;
+}

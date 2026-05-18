@@ -1,25 +1,19 @@
-import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { getBudgetsByTripId, createBudget, addExpense, deleteBudget } from '../db/budgets';
-import Modal from './Modal';
 import ConfirmDialog from './ConfirmDialog';
+import Modal from './Modal';
 import './Budget.css';
 
 const DEFAULT_CATEGORIES = ['交通', '住宿', '餐饮', '门票', '购物', '其他'];
 
-const Budget = forwardRef(function Budget({ tripId, onRefresh }, ref) {
+export default function Budget({ tripId, onRefresh }) {
   const [budgets, setBudgets] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [showExpenseModal, setShowExpenseModal] = useState(false);
-  const [selectedBudget, setSelectedBudget] = useState(null);
-  const [formData, setFormData] = useState({ category: '', budget: '' });
+  const [showExpenseInput, setShowExpenseInput] = useState(null);
   const [expenseAmount, setExpenseAmount] = useState('');
   const [confirm, setConfirm] = useState({ open: false, id: null });
-  const [discardConfirm, setDiscardConfirm] = useState(false);
-  const dirtyRef = useRef(false);
-
-  useImperativeHandle(ref, () => ({
-    openAddModal: () => { setFormData({ category: '', budget: '' }); dirtyRef.current = false; setShowModal(true); }
-  }));
+  const [newCategory, setNewCategory] = useState('');
+  const [newBudget, setNewBudget] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => { setBudgets(getBudgetsByTripId(tripId)); }, [tripId]);
 
@@ -30,25 +24,46 @@ const Budget = forwardRef(function Budget({ tripId, onRefresh }, ref) {
 
   const overspent = remaining < 0;
 
-  const handleSubmit = (e) => {
+  const handleAddBudget = (e) => {
     e.preventDefault();
-    createBudget({ tripId, category: formData.category, budget: parseFloat(formData.budget) || 0, spent: 0 });
-    setFormData({ category: '', budget: '' });
-    dirtyRef.current = false;
-    setShowModal(false);
+    if (!newCategory || !newBudget) return;
+    createBudget({ tripId, category: newCategory, budget: parseFloat(newBudget) || 0, spent: 0 });
+    setNewCategory('');
+    setNewBudget('');
     setBudgets(getBudgetsByTripId(tripId));
     onRefresh?.();
   };
 
-  const handleAddExpense = () => {
-    if (selectedBudget && expenseAmount) {
-      addExpense(selectedBudget.id, parseFloat(expenseAmount));
-      setExpenseAmount('');
-      setShowExpenseModal(false);
-      setSelectedBudget(null);
-      setBudgets(getBudgetsByTripId(tripId));
-      onRefresh?.();
-    }
+  const handleOpenModal = () => {
+    setNewCategory('');
+    setNewBudget('');
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setNewCategory('');
+    setNewBudget('');
+  };
+
+  const handleModalSubmit = (e) => {
+    e.preventDefault();
+    if (!newCategory || !newBudget) return;
+    createBudget({ tripId, category: newCategory, budget: parseFloat(newBudget) || 0, spent: 0 });
+    setNewCategory('');
+    setNewBudget('');
+    setBudgets(getBudgetsByTripId(tripId));
+    onRefresh?.();
+    handleCloseModal();
+  };
+
+  const handleAddExpense = (budgetId) => {
+    if (!expenseAmount) return;
+    addExpense(budgetId, parseFloat(expenseAmount));
+    setExpenseAmount('');
+    setShowExpenseInput(null);
+    setBudgets(getBudgetsByTripId(tripId));
+    onRefresh?.();
   };
 
   const handleDelete = (id) => {
@@ -60,21 +75,6 @@ const Budget = forwardRef(function Budget({ tripId, onRefresh }, ref) {
     setConfirm({ open: false, id: null });
     setBudgets(getBudgetsByTripId(tripId));
     onRefresh?.();
-  };
-
-  const handleCloseBudgetModal = () => {
-    if (dirtyRef.current && (formData.category || formData.budget)) {
-      setDiscardConfirm(true);
-    } else {
-      setShowModal(false);
-    }
-  };
-
-  const discardForm = () => {
-    setDiscardConfirm(false);
-    dirtyRef.current = false;
-    setFormData({ category: '', budget: '' });
-    setShowModal(false);
   };
 
   return (
@@ -98,7 +98,6 @@ const Budget = forwardRef(function Budget({ tripId, onRefresh }, ref) {
         <div className="budget-empty">
           <div className="empty-icon">💰</div>
           <p>还没有预算规划</p>
-          <button onClick={() => { setFormData({ category: '', budget: '' }); dirtyRef.current = false; setShowModal(true); }}>添加预算分类</button>
         </div>
       ) : (
         <div className="budget-list">
@@ -118,41 +117,63 @@ const Budget = forwardRef(function Budget({ tripId, onRefresh }, ref) {
                 <div className="budget-progress-bg">
                   <div className={`budget-progress-fill ${isOver ? 'over' : ''}`} style={{ width: `${Math.min(pct, 100)}%` }}></div>
                 </div>
-                <button className="add-expense-btn" onClick={() => { setSelectedBudget(budget); setShowExpenseModal(true); }}>+ 记一笔</button>
+                {showExpenseInput === budget.id ? (
+                  <div className="inline-expense-form">
+                    <input
+                      type="number"
+                      value={expenseAmount}
+                      onChange={e => setExpenseAmount(e.target.value)}
+                      placeholder="金额"
+                      step="0.01"
+                      min="0"
+                      autoFocus
+                    />
+                    <button onClick={() => handleAddExpense(budget.id)} className="inline-expense-confirm">确认</button>
+                    <button onClick={() => { setShowExpenseInput(null); setExpenseAmount(''); }} className="inline-expense-cancel">取消</button>
+                  </div>
+                ) : (
+                  <button className="add-expense-btn" onClick={() => { setShowExpenseInput(budget.id); setExpenseAmount(''); }}>+ 记一笔</button>
+                )}
               </div>
             );
           })}
         </div>
       )}
 
-      <button className="add-budget-btn" onClick={() => { setFormData({ category: '', budget: '' }); dirtyRef.current = false; setShowModal(true); }}>+ 添加预算分类</button>
-
-      <Modal isOpen={showModal} title="添加预算分类" onClose={handleCloseBudgetModal}>
-        <form onSubmit={handleSubmit} className="budget-form">
+      <Modal
+        isOpen={modalOpen}
+        title="添加预算分类"
+        onClose={handleCloseModal}
+      >
+        <form onSubmit={handleModalSubmit} className="modal-form">
           <div className="form-group">
-            <label>分类</label>
-            <select value={formData.category} onChange={e => { setFormData({...formData, category: e.target.value}); dirtyRef.current = true; }} required>
+            <select
+              value={newCategory}
+              onChange={e => setNewCategory(e.target.value)}
+              className="modal-select"
+              required
+            >
               <option value="">选择分类</option>
               {DEFAULT_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
             </select>
           </div>
           <div className="form-group">
-            <label>预算金额</label>
-            <input type="number" value={formData.budget} onChange={e => { setFormData({...formData, budget: e.target.value}); dirtyRef.current = true; }} placeholder="0.00" step="0.01" min="0" />
+            <input
+              type="number"
+              value={newBudget}
+              onChange={e => setNewBudget(e.target.value)}
+              placeholder="预算金额"
+              step="0.01"
+              min="0"
+              required
+              className="modal-input"
+            />
           </div>
-          <button type="submit" className="submit-btn">添加</button>
+          <button type="submit" className="modal-submit-btn">添加</button>
         </form>
       </Modal>
 
-      <Modal isOpen={showExpenseModal} title={`记一笔 - ${selectedBudget?.category}`} onClose={() => setShowExpenseModal(false)}>
-        <form onSubmit={(e) => { e.preventDefault(); handleAddExpense(); }} className="expense-form">
-          <div className="form-group">
-            <label>金额</label>
-            <input type="number" value={expenseAmount} onChange={e => setExpenseAmount(e.target.value)} placeholder="0.00" step="0.01" min="0" required autoFocus />
-          </div>
-          <button type="submit" className="submit-btn">确认</button>
-        </form>
-      </Modal>
+      <button className="add-item-btn" onClick={handleOpenModal}>+ 添加预算</button>
 
       <ConfirmDialog
         isOpen={confirm.open}
@@ -161,15 +182,6 @@ const Budget = forwardRef(function Budget({ tripId, onRefresh }, ref) {
         onConfirm={confirmDelete}
         onCancel={() => setConfirm({ open: false, id: null })}
       />
-      <ConfirmDialog
-        isOpen={discardConfirm}
-        title="放弃编辑"
-        message="表单中有未保存的内容，确定要放弃吗？"
-        onConfirm={discardForm}
-        onCancel={() => setDiscardConfirm(false)}
-      />
     </div>
   );
-});
-
-export default Budget;
+}
