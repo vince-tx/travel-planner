@@ -17,7 +17,10 @@
 npm run dev      # 启动开发服务器（热重载）
 npm run build    # 生产构建到 dist/
 npm run preview  # 本地预览生产构建
+npx vite --host  # 启动开发服务器并开放局域网访问（手机同 WiFi 下可访问）
 ```
+
+**手机访问**: 启动时必须加 `--host` 参数，手机在同一 WiFi 下通过 `http://<电脑IP>:5173` 访问。`npm run preview` 同理需加 `--host`。
 
 ## 项目结构
 
