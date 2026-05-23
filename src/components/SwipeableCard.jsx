@@ -1,16 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Pencil } from 'lucide-react';
 import './SwipeableCard.css';
 
-export default function SwipeableCard({ children, onDelete, onClick }) {
+export default function SwipeableCard({ children, onDelete, onEdit, onClick }) {
   const [offset, setOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const startXRef = useRef(0);
   const currentOffsetRef = useRef(0);
   const cardRef = useRef(null);
 
-  const DELETE_THRESHOLD = 80;
-  const MAX_OFFSET = 100;
+  const DELETE_THRESHOLD = 100;
+  const MAX_OFFSET = 180;
 
   const handleTouchStart = (e) => {
     startXRef.current = e.touches[0].clientX;
@@ -86,11 +86,27 @@ export default function SwipeableCard({ children, onDelete, onClick }) {
     onDelete && onDelete();
   };
 
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    setOffset(0);
+    onEdit && onEdit();
+  };
+
   return (
     <div className="swipeable-card-container">
-      <div className="swipeable-card-delete" onClick={handleDeleteClick}>
-        <Trash2 size={20} />
-        <span>删除</span>
+      <div className="swipeable-card-actions">
+        {onEdit && (
+          <div className="action-edit" onClick={handleEditClick}>
+            <Pencil size={20} />
+            <span>编辑</span>
+          </div>
+        )}
+        {onDelete && (
+          <div className="action-delete" onClick={handleDeleteClick}>
+            <Trash2 size={20} />
+            <span>删除</span>
+          </div>
+        )}
       </div>
       <div
         ref={cardRef}

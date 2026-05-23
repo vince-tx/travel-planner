@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Settings, Plane, Cloud } from 'lucide-react';
-import { getAllTrips, createTrip, deleteTrip } from '../db/trips';
+import { getAllTrips, createTrip, updateTrip, deleteTrip } from '../db/trips';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import SettingsPanel from '../components/SettingsPanel';
@@ -17,6 +17,7 @@ export default function TripList({ onSelectTrip }) {
   const [formData, setFormData] = useState({ name: '', destination: '', cityCode: '', startDate: '', endDate: '' });
   const [confirm, setConfirm] = useState({ open: false, id: null });
   const [discardConfirm, setDiscardConfirm] = useState(false);
+  const [editingTripId, setEditingTripId] = useState(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [weatherData, setWeatherData] = useState({});
   const dirtyRef = useRef(false);
@@ -44,9 +45,14 @@ export default function TripList({ onSelectTrip }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createTrip(formData);
+    if (editingTripId) {
+      updateTrip(editingTripId, formData);
+    } else {
+      createTrip(formData);
+    }
     setFormData({ name: '', destination: '', cityCode: '', startDate: '', endDate: '' });
     dirtyRef.current = false;
+    setEditingTripId(null);
     setShowModal(false);
     loadTrips();
   };
@@ -70,6 +76,7 @@ export default function TripList({ onSelectTrip }) {
     if (dirtyRef.current && hasFormData(formData)) {
       setDiscardConfirm(true);
     } else {
+      setEditingTripId(null);
       setShowModal(false);
     }
   };
@@ -77,7 +84,8 @@ export default function TripList({ onSelectTrip }) {
   const discardForm = () => {
     setDiscardConfirm(false);
     dirtyRef.current = false;
-    setFormData({ name: '', destination: '', startDate: '', endDate: '' });
+    setEditingTripId(null);
+    setFormData({ name: '', destination: '', cityCode: '', startDate: '', endDate: '' });
     setShowModal(false);
   };
 
@@ -89,6 +97,19 @@ export default function TripList({ onSelectTrip }) {
     if (diff < 0) return '已结束';
     if (diff === 0) return '今天出发';
     return `${diff}天后出发`;
+  };
+
+  const handleEdit = (trip) => {
+    setFormData({
+      name: trip.name || '',
+      destination: trip.destination || '',
+      cityCode: trip.cityCode || '',
+      startDate: trip.startDate || '',
+      endDate: trip.endDate || '',
+    });
+    setEditingTripId(trip.id);
+    dirtyRef.current = false;
+    setShowModal(true);
   };
 
   return (
@@ -115,6 +136,7 @@ export default function TripList({ onSelectTrip }) {
                 <SwipeableCard
                   key={trip.id}
                   onDelete={() => setConfirm({ open: true, id: trip.id })}
+                  onEdit={() => handleEdit(trip)}
                   onClick={() => onSelectTrip(trip.id)}
                 >
                   <div className="trip-card-inner">
@@ -145,11 +167,12 @@ export default function TripList({ onSelectTrip }) {
         tomorrow.setDate(tomorrow.getDate() + 1);
         const formatDate = (date) => date.toISOString().split('T')[0];
         setFormData({ name: '', destination: '', cityCode: '', startDate: formatDate(today), endDate: formatDate(tomorrow) }); 
-        dirtyRef.current = false; 
-        setShowModal(true); 
+        dirtyRef.current = false;
+        setEditingTripId(null);
+        setShowModal(true);
       }}>+ 创建旅行</button>
 
-      <Modal isOpen={showModal} title="创建旅行" onClose={handleCloseModal}>
+      <Modal isOpen={showModal} title={editingTripId ? "编辑旅行" : "创建旅行"} onClose={handleCloseModal}>
         <form onSubmit={handleSubmit} className="trip-form">
           <div className="form-group">
             <label>目的地</label>
@@ -174,7 +197,7 @@ export default function TripList({ onSelectTrip }) {
               <input type="date" value={formData.endDate} onChange={e => { setFormData({...formData, endDate: e.target.value}); dirtyRef.current = true; }} required />
             </div>
           </div>
-          <button type="submit" className="submit-btn">创建</button>
+          <button type="submit" className="submit-btn">{editingTripId ? '保存' : '创建'}</button>
         </form>
       </Modal>
 

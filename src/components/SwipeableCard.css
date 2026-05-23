@@ -5,13 +5,18 @@
   border-radius: 20px;
 }
 
-.swipeable-card-delete {
+.swipeable-card-actions {
   position: absolute;
   right: 0;
   top: 0;
   bottom: 0;
-  width: 100px;
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  width: 180px;
+  display: flex;
+}
+
+.swipeable-card-actions .action-edit,
+.swipeable-card-actions .action-delete {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,11 +29,27 @@
   transition: background 0.2s;
 }
 
-.swipeable-card-delete:hover {
+.action-edit {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.action-edit:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.action-edit:active {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+.action-delete {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.action-delete:hover {
   background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
 }
 
-.swipeable-card-delete:active {
+.action-delete:active {
   background: linear-gradient(135deg, #a93226 0%, #922b21 100%);
 }
 
