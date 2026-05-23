@@ -3,9 +3,10 @@ import { getAllTrips, createTrip, deleteTrip } from '../db/trips';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import SettingsPanel from '../components/SettingsPanel';
+import AreaSelector from '../components/AreaSelector';
 import './TripList.css';
 
-const hasFormData = (data) => data.name || data.destination || data.startDate || data.endDate;
+const hasFormData = (data) => data.destination || data.startDate || data.endDate;
 
 export default function TripList({ onSelectTrip }) {
   const [trips, setTrips] = useState([]);
@@ -97,17 +98,29 @@ export default function TripList({ onSelectTrip }) {
         )}
       </div>
 
-      <button className="add-trip-btn" onClick={() => { setFormData({ name: '', destination: '', startDate: '', endDate: '' }); dirtyRef.current = false; setShowModal(true); }}>+ 创建旅行</button>
+      <button className="add-trip-btn" onClick={() => { 
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const formatDate = (date) => date.toISOString().split('T')[0];
+        setFormData({ name: '', destination: '', startDate: formatDate(today), endDate: formatDate(tomorrow) }); 
+        dirtyRef.current = false; 
+        setShowModal(true); 
+      }}>+ 创建旅行</button>
 
       <Modal isOpen={showModal} title="创建旅行" onClose={handleCloseModal}>
         <form onSubmit={handleSubmit} className="trip-form">
           <div className="form-group">
-            <label>旅行名称</label>
-            <input type="text" value={formData.name} onChange={e => { setFormData({...formData, name: e.target.value}); dirtyRef.current = true; }} placeholder="如：东京之旅" required />
-          </div>
-          <div className="form-group">
             <label>目的地</label>
-            <input type="text" value={formData.destination} onChange={e => { setFormData({...formData, destination: e.target.value}); dirtyRef.current = true; }} placeholder="如：日本东京" />
+            <AreaSelector 
+              value={formData.destination} 
+              onChange={(value) => { 
+                const parts = value.split('/');
+                const name = parts.length >= 2 ? `${parts[0]}-${parts[1]}` : (parts[0] || '');
+                setFormData({...formData, destination: value, name}); 
+                dirtyRef.current = true; 
+              }} 
+            />
           </div>
           <div className="form-row">
             <div className="form-group">

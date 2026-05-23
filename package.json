@@ -9,8 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "china-area-data": "^5.0.1",
+    "leaflet": "^1.9.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-leaflet": "^4.2.1",
     "sql.js": "^1.10.0"
   },
   "devDependencies": {

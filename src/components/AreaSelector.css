@@ -1,0 +1,38 @@
+.area-selector {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.area-select {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 100px;
+}
+
+.area-select:hover:not(:disabled) {
+  border-color: #4f46e5;
+}
+
+.area-select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.area-select:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.area-select option {
+  padding: 8px;
+}

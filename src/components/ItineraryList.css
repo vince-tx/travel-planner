@@ -19,6 +19,15 @@
   background: linear-gradient(180deg, #e5e5e5, transparent);
 }
 .itinerary-item:last-child::before { display: none; }
+
+.itinerary-item.editing {
+  flex-direction: column;
+  background: #f8f7f5;
+  border-radius: 14px;
+  padding: 14px;
+  border: 2px solid #667eea;
+}
+.itinerary-item.editing::before { display: none; }
 .itinerary-time { width: 40px; font-size: 12px; font-weight: 500; color: #aaa; padding-top: 5px; text-align: right; }
 .itinerary-dot {
   width: 30px; height: 30px; border-radius: 10px;
@@ -35,6 +44,12 @@
 .itinerary-content:hover { background: #f2f1ee; border-color: rgba(0, 0, 0, 0.04); }
 .itinerary-title { font-size: 14px; font-weight: 600; color: #1a1a1a; }
 .itinerary-location { font-size: 12px; color: #999; margin-top: 4px; }
+.itinerary-coords {
+  font-size: 11px;
+  color: #667eea;
+  margin-top: 4px;
+  font-family: monospace;
+}
 .itinerary-notes {
   font-size: 12px; color: #777; margin-top: 8px; padding-top: 8px;
   border-top: 1px solid rgba(0, 0, 0, 0.05); line-height: 1.5;
@@ -47,13 +62,120 @@
 }
 .itinerary-delete:hover { background: rgba(231, 76, 60, 0.15); }
 
+.itinerary-edit-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.itinerary-edit-date,
+.itinerary-edit-time {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #e0ddd8;
+  border-radius: 8px;
+  font-size: 13px;
+  background: #fff;
+}
+.itinerary-edit-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.location-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.location-input-group .itinerary-edit-location {
+  flex: 1;
+}
+
+.map-picker-btn {
+  padding: 10px 12px;
+  border: 1px solid #e0ddd8;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.map-picker-btn:hover {
+  background: #f5f4f1;
+  border-color: #667eea;
+}
+.itinerary-edit-title,
+.itinerary-edit-location {
+  padding: 10px 12px;
+  border: 1px solid #e0ddd8;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+}
+.itinerary-edit-notes {
+  padding: 10px 12px;
+  border: 1px solid #e0ddd8;
+  border-radius: 8px;
+  font-size: 13px;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
+.itinerary-edit-title:focus,
+.itinerary-edit-location:focus,
+.itinerary-edit-notes:focus,
+.itinerary-edit-date:focus,
+.itinerary-edit-time:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.itinerary-edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.itinerary-save,
+.itinerary-cancel {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.itinerary-save {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+.itinerary-save:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+.itinerary-cancel {
+  background: #f0efec;
+  color: #666;
+}
+.itinerary-cancel:hover {
+  background: #e5e4e1;
+}
+
 /* Modal form styles */
 .modal-form {
   display: flex; flex-direction: column; gap: 16px;
 }
 .modal-form .form-row { display: flex; gap: 12px; }
 .modal-form .form-group { flex: 1; }
-
+.modal-form .form-group label {
+  display: block; margin-bottom: 6px; font-size: 13px;
+  font-weight: 600; color: #666;
+}
 .modal-form input,
 .modal-form textarea {
   width: 100%; padding: 12px 14px;
@@ -68,6 +190,29 @@
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 .modal-form textarea { resize: vertical; min-height: 80px; }
+
+.modal-form .show-advanced-btn {
+  width: 100%; padding: 10px; border: none;
+  background: transparent; color: #667eea; font-size: 14px;
+  cursor: pointer; text-align: center; transition: all 0.2s;
+  border-radius: 10px;
+}
+.modal-form .show-advanced-btn:hover {
+  background: rgba(102, 126, 234, 0.08);
+}
+
+.modal-form .advanced-fields {
+  display: flex; flex-direction: column; gap: 16px;
+  padding: 16px; background: #f5f4f1; border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.modal-form .hide-advanced-btn {
+  width: 100%; padding: 8px; border: none;
+  background: transparent; color: #999; font-size: 13px;
+  cursor: pointer; text-align: center;
+}
+.modal-form .hide-advanced-btn:hover { color: #666; }
 
 .modal-submit-btn {
   width: 100%; padding: 14px; border: none;
@@ -118,11 +263,50 @@
 .dark .itinerary-content:hover { background: #1a1a24; border-color: rgba(255, 255, 255, 0.06); }
 .dark .itinerary-title { color: #e8e8ed; }
 .dark .itinerary-location { color: #666; }
+.dark .itinerary-coords { color: #8b9cf7; }
 .dark .itinerary-notes { color: #a0a0b0; border-top-color: rgba(255, 255, 255, 0.05); }
 .dark .itinerary-delete { background: rgba(248, 113, 113, 0.1); color: #f87171; }
 .dark .itinerary-delete:hover { background: rgba(248, 113, 113, 0.18); }
 
+.dark .itinerary-item.editing {
+  background: #1a1a24;
+  border-color: #8b9cf7;
+}
+.dark .itinerary-edit-date,
+.dark .itinerary-edit-time,
+.dark .itinerary-edit-title,
+.dark .itinerary-edit-location,
+.dark .itinerary-edit-notes {
+  background: #14141c;
+  border-color: #2a2a35;
+  color: #e8e8ed;
+}
+.dark .itinerary-cancel {
+  background: #2a2a35;
+  color: #888;
+}
+.dark .itinerary-cancel:hover {
+  background: #3a3a45;
+}
+
+.dark .map-picker-btn {
+  background: #1a1a24;
+  border-color: #2a2a35;
+}
+
+.dark .map-picker-btn:hover {
+  background: #2a2a35;
+  border-color: #8b9cf7;
+}
+
 .dark .modal-form input,
 .dark .modal-form textarea { background: #14141c; border-color: #2a2a35; color: #e8e8ed; }
+.dark .modal-form .form-group label { color: #888; }
 .dark .modal-form input:focus,
 .dark .modal-form textarea:focus { border-color: #8b9cf7; background: #1a1a24; box-shadow: 0 0 0 3px rgba(139, 156, 247, 0.1); }
+
+.dark .modal-form .show-advanced-btn { color: #8b9cf7; }
+.dark .modal-form .show-advanced-btn:hover { background: rgba(139, 156, 247, 0.1); }
+.dark .modal-form .advanced-fields { background: #14141c; border-color: rgba(255, 255, 255, 0.04); }
+.dark .modal-form .hide-advanced-btn { color: #666; }
+.dark .modal-form .hide-advanced-btn:hover { color: #888; }
