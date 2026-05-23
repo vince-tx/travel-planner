@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './LocationPicker.css';
 
-const AMAP_KEY = '9743956dbf6ba4884ce3fe44805f3259';
+const AMAP_KEY = import.meta.env.VITE_AMAP_KEY || '9743956dbf6ba4884ce3fe44805f3259';
 
 const cleanAddress = (address) => {
   if (!address) return '';

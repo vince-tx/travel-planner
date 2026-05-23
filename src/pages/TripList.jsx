@@ -5,6 +5,7 @@ import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import SettingsPanel from '../components/SettingsPanel';
 import AreaSelector from '../components/AreaSelector';
+import SwipeableCard from '../components/SwipeableCard';
 import { fetchWeather, getWeatherIcon, getCityCodeFromDestination } from '../services/weather';
 import './TripList.css';
 
@@ -111,23 +112,28 @@ export default function TripList({ onSelectTrip }) {
           trips.map(trip => {
               const weather = weatherData[trip.id];
               return (
-                <div key={trip.id} className="trip-card" onClick={() => onSelectTrip(trip.id)}>
-                  <div className="trip-card-header">
-                    <h3>{trip.name}</h3>
-                    <button className="trip-card-delete" onClick={(e) => handleDelete(trip.id, e)}>删除</button>
+                <SwipeableCard
+                  key={trip.id}
+                  onDelete={() => setConfirm({ open: true, id: trip.id })}
+                  onClick={() => onSelectTrip(trip.id)}
+                >
+                  <div className="trip-card-inner">
+                    <div className="trip-card-header">
+                      <h3>{trip.name}</h3>
+                    </div>
+                    <div className="trip-card-row">
+                      <div className="trip-card-destination">{trip.destination}</div>
+                      {weather && (
+                        <div className="trip-card-weather">
+                          <span className="weather-icon">{getWeatherIcon(weather.weather)}</span>
+                          <span className="weather-info">{weather.temperature}°C · {weather.weather}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="trip-card-dates">{trip.startDate} - {trip.endDate}</div>
+                    <div className="trip-card-days">{getDaysRemaining(trip.startDate)}</div>
                   </div>
-                  <div className="trip-card-row">
-                    <div className="trip-card-destination">{trip.destination}</div>
-                    {weather && (
-                      <div className="trip-card-weather">
-                        <span className="weather-icon">{getWeatherIcon(weather.weather)}</span>
-                        <span className="weather-info">{weather.temperature}°C · {weather.weather}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="trip-card-dates">{trip.startDate} - {trip.endDate}</div>
-                  <div className="trip-card-days">{getDaysRemaining(trip.startDate)}</div>
-                </div>
+                </SwipeableCard>
               );
             })
         )}

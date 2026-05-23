@@ -98,7 +98,7 @@ export default function ItineraryList({ tripId, onRefresh }) {
     
     if (item.coords) {
       amapUrl = `amapuri://route/plan?dlat=${item.coords.lat}&dlon=${item.coords.lng}&dname=${location}&dev=0&t=0`;
-      webUrl = `https://uri.amap.com/navigation?to=${item.coords.lat},${item.coords.lng},${location}&mode=car`;
+      webUrl = `https://uri.amap.com/navigation?to=${item.coords.lng},${item.coords.lat},${location}&mode=car`;
     } else {
       amapUrl = `amapuri://route/plan?dname=${location}&dev=0&t=0`;
       webUrl = `https://uri.amap.com/navigation?to=${location}&mode=car`;

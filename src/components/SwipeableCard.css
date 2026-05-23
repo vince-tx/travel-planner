@@ -1,0 +1,54 @@
+.swipeable-card-container {
+  position: relative;
+  margin-bottom: 14px;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.swipeable-card-delete {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.swipeable-card-delete:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+}
+
+.swipeable-card-delete:active {
+  background: linear-gradient(135deg, #a93226 0%, #922b21 100%);
+}
+
+.swipeable-card-content {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  transition: transform 0.1s ease-out;
+  cursor: pointer;
+  border-radius: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.swipeable-card-content:active {
+  transition: none;
+}
+
+.dark .swipeable-card-content {
+  background: #1a1a24;
+  border-color: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1);
+}

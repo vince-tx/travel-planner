@@ -18,24 +18,9 @@
 }
 .trip-list-empty p { margin-top: 4px; font-size: 14px; }
 
-.trip-card {
-  background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 14px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  cursor: pointer; position: relative; transition: all 0.25s ease;
-  overflow: hidden;
+.trip-card-inner {
+  padding: 20px;
 }
-.trip-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  opacity: 0; transition: opacity 0.25s;
-}
-.trip-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 12px 32px rgba(0, 0, 0, 0.04);
-}
-.trip-card:hover::before { opacity: 1; }
-.trip-card:active { transform: translateY(-1px); }
 
 .trip-card-header { display: flex; justify-content: space-between; align-items: center; }
 .trip-card-header h3 { font-size: 18px; font-weight: 700; color: #1a1a1a; letter-spacing: -0.01em; }
@@ -55,13 +40,6 @@
 }
 .weather-icon { font-size: 14px; }
 .weather-info { font-size: 12px; color: #555; }
-.trip-card-delete {
-  padding: 6px 14px; border: none;
-  background: rgba(231, 76, 60, 0.08); color: #e74c3c; border-radius: 8px;
-  font-size: 12px; font-weight: 500; cursor: pointer;
-  flex-shrink: 0; transition: all 0.2s;
-}
-.trip-card-delete:hover { background: rgba(231, 76, 60, 0.15); }
 
 .add-trip-btn {
   position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
@@ -110,17 +88,6 @@
 .dark .trip-list-settings-btn { color: #e8e8ed; }
 .dark .trip-list-settings-btn:hover { background: rgba(255, 255, 255, 0.06); }
 .dark .trip-list-header h1 { color: #e8e8ed; }
-.dark .trip-card {
-  background: #1a1a24;
-  border-color: rgba(255, 255, 255, 0.04);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1);
-}
-.dark .trip-card::before {
-  background: linear-gradient(90deg, #8b9cf7, #a78bfa);
-}
-.dark .trip-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 12px 32px rgba(0, 0, 0, 0.15);
-}
 .dark .trip-card-header h3 { color: #e8e8ed; }
 .dark .trip-card-destination { color: #666; }
 .dark .trip-card-dates { color: #a0a0b0; }
@@ -128,8 +95,6 @@
 .dark .trip-card-weather { background: rgba(139, 156, 247, 0.1); }
 .dark .weather-info { color: #a0a0b0; }
 .dark .trip-card-row { margin-top: 6px; }
-.dark .trip-card-delete { background: rgba(248, 113, 113, 0.1); color: #f87171; }
-.dark .trip-card-delete:hover { background: rgba(248, 113, 113, 0.18); }
 .dark .trip-list-empty { color: #888; }
 .dark .trip-list-empty .empty-icon { color: #8b9cf7; }
 .dark .form-group input {

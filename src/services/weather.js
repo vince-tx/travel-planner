@@ -1,9 +1,9 @@
 import areaData from 'china-area-data/data.json';
 
-const AMAP_KEY = 'b76f1022a7ee4da15ade3863fb3bd341';
+const AMAP_KEY = import.meta.env.VITE_AMAP_WEATHER_KEY || import.meta.env.VITE_AMAP_KEY || 'b76f1022a7ee4da15ade3863fb3bd341';
 
 const weatherCache = new Map();
-let cacheTime = 0;
+const cacheTimestamps = new Map();
 const CACHE_DURATION = 10 * 60 * 1000;
 
 export function getCityCodeFromDestination(destination) {
@@ -36,7 +36,8 @@ export async function fetchWeather(cityCode) {
   if (!cityCode) return null;
   
   const now = Date.now();
-  if (now - cacheTime < CACHE_DURATION && weatherCache.has(cityCode)) {
+  const cachedTime = cacheTimestamps.get(cityCode);
+  if (cachedTime && now - cachedTime < CACHE_DURATION && weatherCache.has(cityCode)) {
     return weatherCache.get(cityCode);
   }
 
@@ -58,7 +59,7 @@ export async function fetchWeather(cityCode) {
       };
       
       weatherCache.set(cityCode, weather);
-      cacheTime = now;
+      cacheTimestamps.set(cityCode, now);
       return weather;
     }
     return null;
