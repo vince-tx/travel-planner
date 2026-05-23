@@ -4,6 +4,7 @@ import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import SettingsPanel from '../components/SettingsPanel';
 import AreaSelector from '../components/AreaSelector';
+import { EmptyIcon } from '../components/Icons';
 import './TripList.css';
 
 const hasFormData = (data) => data.destination || data.startDate || data.endDate;
@@ -79,7 +80,7 @@ export default function TripList({ onSelectTrip }) {
       <div className="trip-list">
         {trips.length === 0 ? (
           <div className="trip-list-empty">
-            <div className="empty-icon">✈️</div>
+            <EmptyIcon name="plane" size={64} />
             <p>还没有旅行计划</p>
             <p>点击下方按钮创建第一个旅行</p>
           </div>

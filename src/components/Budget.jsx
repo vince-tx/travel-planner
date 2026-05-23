@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getBudgetsByTripId, createBudget, addExpense, deleteBudget } from '../db/budgets';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
+import { EmptyIcon } from './Icons';
 import './Budget.css';
 
 const DEFAULT_CATEGORIES = ['交通', '住宿', '餐饮', '门票', '购物', '其他'];
@@ -96,7 +97,7 @@ export default function Budget({ tripId, onRefresh }) {
 
       {budgets.length === 0 ? (
         <div className="budget-empty">
-          <div className="empty-icon">💰</div>
+          <EmptyIcon name="wallet" size={64} />
           <p>还没有预算规划</p>
         </div>
       ) : (

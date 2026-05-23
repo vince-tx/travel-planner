@@ -248,13 +248,13 @@ export default function LocationPicker({
       
       {isLocating && (
         <div className="location-picker-hint">
-          📍 正在获取当前位置...
+          <AppIcon name="mapPin" size={16} /> 正在获取当前位置...
         </div>
       )}
       
       {address && !isLocating && (
         <div className="location-picker-address">
-          📍 {address}
+          <AppIcon name="mapPin" size={16} /> {address}
         </div>
       )}
       

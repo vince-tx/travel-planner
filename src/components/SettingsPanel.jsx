@@ -1,10 +1,11 @@
 import { useTheme } from '../context/ThemeContext';
+import { AppIcon } from './Icons';
 import './SettingsPanel.css';
 
 const themes = [
-  { value: 'light', label: '浅色', icon: '☀️' },
-  { value: 'dark', label: '深色', icon: '🌙' },
-  { value: 'system', label: '跟随系统', icon: '💻' },
+  { value: 'light', label: '浅色', icon: 'sun' },
+  { value: 'dark', label: '深色', icon: 'moon' },
+  { value: 'system', label: '跟随系统', icon: 'monitor' },
 ];
 
 export default function SettingsPanel({ open, onClose }) {
@@ -29,7 +30,7 @@ export default function SettingsPanel({ open, onClose }) {
                 className={`theme-option ${theme === t.value ? 'active' : ''}`}
                 onClick={() => setTheme(t.value)}
               >
-                <span className="theme-option-icon">{t.icon}</span>
+                <AppIcon name={t.icon} size={20} />
                 <span className="theme-option-label">{t.label}</span>
               </button>
             ))}

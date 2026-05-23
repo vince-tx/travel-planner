@@ -3,6 +3,7 @@ import { getItinerariesByTripId, createItinerary, updateItinerary, deleteItinera
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
 import LocationPicker from './LocationPicker';
+import { AppIcon, EmptyIcon } from './Icons';
 import './ItineraryList.css';
 
 export default function ItineraryList({ tripId, onRefresh }) {
@@ -149,7 +150,7 @@ export default function ItineraryList({ tripId, onRefresh }) {
     <div className="itinerary-list">
       {items.length === 0 && !editingId ? (
         <div className="itinerary-empty">
-          <div className="empty-icon">📅</div>
+          <EmptyIcon name="calendar" size={64} />
           <p>还没有行程安排</p>
         </div>
       ) : (
@@ -200,7 +201,7 @@ export default function ItineraryList({ tripId, onRefresh }) {
                             onClick={() => setShowLocationPicker(!showLocationPicker)}
                             title="地图选点"
                           >
-                            📍
+                            <AppIcon name="mapPin" size={16} />
                           </button>
                         </div>
                         
@@ -234,7 +235,9 @@ export default function ItineraryList({ tripId, onRefresh }) {
                   ) : (
                     <>
                       <div className="itinerary-time">{item.time || '--:--'}</div>
-                      <div className="itinerary-dot">📍</div>
+                      <div className="itinerary-dot">
+                        <AppIcon name="mapPin" size={16} />
+                      </div>
                       <div className="itinerary-content" onClick={() => handleEdit(item)}>
                         <div className="itinerary-title">{item.title}</div>
                         {item.location && <div className="itinerary-location">{item.location}</div>}
@@ -249,7 +252,7 @@ export default function ItineraryList({ tripId, onRefresh }) {
                           }}
                           title="导航"
                         >
-                          🧭
+                          <AppIcon name="compass" size={18} />
                         </button>
                       )}
                       <button className="itinerary-delete" onClick={() => handleDelete(item.id)}>×</button>
@@ -323,7 +326,7 @@ export default function ItineraryList({ tripId, onRefresh }) {
                     onClick={() => setShowLocationPicker(!showLocationPicker)}
                     title="地图选点"
                   >
-                    📍
+                    <AppIcon name="mapPin" size={16} />
                   </button>
                 </div>
               </div>

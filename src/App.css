@@ -63,6 +63,16 @@ body {
   filter: grayscale(0.2);
 }
 
+.empty-icon-svg {
+  margin-bottom: 12px;
+  opacity: 0.4;
+  color: #888;
+}
+
+.dark .empty-icon-svg {
+  color: #666;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;

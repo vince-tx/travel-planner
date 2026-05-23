@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getChecklistsByTripId, createChecklistItem, toggleChecklistItem, deleteChecklistItem } from '../db/checklists';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
+import { EmptyIcon } from './Icons';
 import './Checklist.css';
 
 const DEFAULT_CATEGORIES = ['衣物', '证件', '洗漱', '电子设备', '药品', '其他'];
@@ -94,7 +95,7 @@ export default function Checklist({ tripId, onRefresh }) {
 
       {items.length === 0 ? (
         <div className="checklist-empty">
-          <div className="empty-icon">📋</div>
+          <EmptyIcon name="checklist" size={64} />
           <p>还没有清单</p>
         </div>
       ) : (

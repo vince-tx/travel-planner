@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getAllTrips } from '../db/trips';
+import { AppIcon } from './Icons';
 import './Sidebar.css';
 
 export default function Sidebar({ isOpen, onClose, onSelectTrip, selectedTripId }) {
@@ -36,7 +37,7 @@ export default function Sidebar({ isOpen, onClose, onSelectTrip, selectedTripId 
                 className={`sidebar-item ${selectedTripId === trip.id ? 'active' : ''}`}
                 onClick={() => { onSelectTrip(trip.id); onClose(); }}
               >
-                <span className="sidebar-item-icon">✈️</span>
+                <AppIcon name="plane" size={20} />
                 <div className="sidebar-item-content">
                   <span className="sidebar-item-name">{trip.name}</span>
                   <span className="sidebar-item-days">{getDaysRemaining(trip.startDate)}</span>

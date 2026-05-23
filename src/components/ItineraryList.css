@@ -33,9 +33,10 @@
   width: 30px; height: 30px; border-radius: 10px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; color: #fff; flex-shrink: 0;
+  color: #fff; flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25);
 }
+.itinerary-dot svg { width: 14px; height: 14px; }
 .itinerary-content {
   flex: 1; background: #f8f7f5; border-radius: 14px; padding: 14px 16px;
   cursor: pointer; transition: all 0.2s;
@@ -57,11 +58,13 @@
 .itinerary-navigate {
   width: 28px; height: 28px; border: none;
   background: rgba(34, 197, 94, 0.08); color: #22c55e;
-  border-radius: 8px; cursor: pointer; font-size: 14px; flex-shrink: 0;
+  border-radius: 8px; cursor: pointer; flex-shrink: 0;
   transition: all 0.2s;
   margin-right: 4px;
+  display: flex; align-items: center; justify-content: center;
 }
 .itinerary-navigate:hover { background: rgba(34, 197, 94, 0.15); }
+.itinerary-navigate svg { width: 18px; height: 18px; }
 
 .itinerary-delete {
   width: 28px; height: 28px; border: none;
@@ -105,10 +108,12 @@
   border: 1px solid #e0ddd8;
   border-radius: 8px;
   background: #fff;
-  font-size: 16px;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
 }
+.map-picker-btn svg { width: 16px; height: 16px; color: #666; transition: color 0.2s; }
+.map-picker-btn:hover svg { color: #667eea; }
 
 .map-picker-btn:hover {
   background: #f5f4f1;
@@ -305,6 +310,8 @@
   background: #1a1a24;
   border-color: #2a2a35;
 }
+.dark .map-picker-btn svg { color: #888; }
+.dark .map-picker-btn:hover svg { color: #8b9cf7; }
 
 .dark .map-picker-btn:hover {
   background: #2a2a35;
