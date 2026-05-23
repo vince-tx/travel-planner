@@ -1,25 +1,7 @@
-import { useState } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import { useState, useEffect, useRef } from 'react';
 import './LocationPicker.css';
 
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-});
-
-function LocationMarker({ position, onSelect }) {
-  useMapEvents({
-    click(e) {
-      onSelect(e.latlng);
-    },
-  });
-
-  return position ? <Marker position={position} /> : null;
-}
+const AMAP_KEY = '9743956dbf6ba4884ce3fe44805f3259';
 
 const cleanAddress = (address) => {
   if (!address) return '';
@@ -45,54 +27,160 @@ export default function LocationPicker({
   placeholder = '点击地图选择位置',
   className = '' 
 }) {
+  const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const markerRef = useRef(null);
   const [position, setPosition] = useState(value ? { lat: value.lat, lng: value.lng } : null);
-  const [searchQuery, setSearchQuery] = useState('');
   const [address, setAddress] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isMapReady, setIsMapReady] = useState(false);
 
-  const handleMapClick = async (latlng) => {
-    const newPos = { lat: latlng.lat, lng: latlng.lng };
-    setPosition(newPos);
-    
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${newPos.lat}&lon=${newPos.lng}&zoom=18`
-      );
-      const result = await response.json();
-      const rawAddress = result.display_name || '';
-      const cleanedAddress = cleanAddress(rawAddress);
-      setAddress(cleanedAddress);
-      onChange(newPos, cleanedAddress);
-    } catch (error) {
-      console.error('获取地址失败:', error);
-      onChange(newPos, '');
+  useEffect(() => {
+    if (!window.AMap) {
+      console.error('❌ 高德地图 API 未加载');
+      return;
     }
+
+    console.log('✅ 高德地图 API 已加载');
+
+    const defaultCenter = position || { lat: 39.9042, lng: 116.4074 };
+    
+    const map = new window.AMap.Map(mapRef.current, {
+      zoom: position ? 15 : 10,
+      center: [defaultCenter.lng, defaultCenter.lat],
+      viewMode: '2D',
+    });
+
+    mapInstanceRef.current = map;
+    console.log('🗺️ 地图初始化完成');
+
+    window.AMap.plugin(['AMap.Geocoder', 'AMap.PlaceSearch'], () => {
+      console.log('✅ 插件加载完成');
+      setIsMapReady(true);
+    });
+
+    map.on('click', (e) => {
+      const { lng, lat } = e.lnglat;
+      console.log(`🖱️ 点击地图: ${lat}, ${lng}`);
+      handleLocationSelect(lat, lng);
+    });
+
+    if (position) {
+      addMarker([position.lng, position.lat]);
+    }
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.destroy();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isMapReady && value) {
+      const newPos = { lat: value.lat, lng: value.lng };
+      setPosition(newPos);
+      const map = mapInstanceRef.current;
+      if (map) {
+        map.setCenter([newPos.lng, newPos.lat]);
+        map.setZoom(15);
+        addMarker([newPos.lng, newPos.lat]);
+      }
+      
+      const geocoder = new window.AMap.Geocoder();
+      geocoder.getAddress([newPos.lng, newPos.lat], (status, result) => {
+        console.log('🔍 逆地理编码状态:', status);
+        console.log('📍 逆地理编码结果:', result);
+        
+        if (status === 'complete' && result.info === 'OK') {
+          const cleanedAddress = cleanAddress(result.regeocode.formattedAddress);
+          console.log('✅ 获取到地址:', cleanedAddress);
+          setAddress(cleanedAddress);
+        } else {
+          console.error('❌ 获取地址失败:', status, result.info);
+        }
+      });
+    }
+  }, [value, isMapReady]);
+
+  const addMarker = (pos) => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (markerRef.current) {
+      markerRef.current.setMap(null);
+    }
+
+    markerRef.current = new window.AMap.Marker({
+      position: pos,
+      map: map,
+    });
   };
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
+  const handleLocationSelect = (lat, lng) => {
+    const newPos = { lat, lng };
+    setPosition(newPos);
+    addMarker([lng, lat]);
+
+    const map = mapInstanceRef.current;
+    if (map) {
+      map.setCenter([lng, lat]);
+    }
+
+    const geocoder = new window.AMap.Geocoder();
+    console.log(`🔍 开始逆地理编码: ${lat}, ${lng}`);
     
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=1`
-      );
-      const results = await response.json();
+    geocoder.getAddress([lng, lat], (status, result) => {
+      console.log('🔍 逆地理编码状态:', status);
+      console.log('📍 逆地理编码结果:', result);
       
-      if (results.length > 0) {
-        const { lat, lon, display_name } = results[0];
-        const newPos = { lat: parseFloat(lat), lng: parseFloat(lon) };
-        const cleanedAddress = cleanAddress(display_name);
-        setPosition(newPos);
+      if (status === 'complete' && result.info === 'OK') {
+        const cleanedAddress = cleanAddress(result.regeocode.formattedAddress);
+        console.log('✅ 获取到地址:', cleanedAddress);
         setAddress(cleanedAddress);
         onChange(newPos, cleanedAddress);
-        setSearchQuery('');
+      } else {
+        console.error('❌ 获取地址失败:', status, result.info);
+        onChange(newPos, '');
       }
-    } catch (error) {
-      console.error('搜索失败:', error);
-    }
+    });
   };
 
-  const defaultCenter = position || { lat: 39.9042, lng: 116.4074 };
-  const zoom = position ? 15 : 10;
+  const handleSearch = () => {
+    if (!searchQuery.trim() || !window.AMap) return;
+    
+    const placeSearch = new window.AMap.PlaceSearch({
+      city: '全国',
+      citylimit: false,
+    });
+
+    placeSearch.search(searchQuery, (status, result) => {
+      console.log('🔍 搜索状态:', status);
+      console.log('📍 搜索结果:', result);
+      
+      if (status === 'complete' && result.info === 'OK' && result.poiList.pois.length > 0) {
+        const poi = result.poiList.pois[0];
+        const lng = poi.location.lng;
+        const lat = poi.location.lat;
+        const cleanedAddress = cleanAddress(poi.address || poi.name);
+        
+        setPosition({ lat, lng });
+        setAddress(cleanedAddress || poi.name);
+        
+        const map = mapInstanceRef.current;
+        if (map) {
+          map.setCenter([lng, lat]);
+          map.setZoom(15);
+          addMarker([lng, lat]);
+        }
+        
+        onChange({ lat, lng }, cleanedAddress || poi.name);
+        setSearchQuery('');
+      } else {
+        console.error('❌ 搜索失败:', status, result.info);
+      }
+    });
+  };
 
   return (
     <div className={`location-picker ${className}`}>
@@ -111,18 +199,7 @@ export default function LocationPicker({
       </div>
       
       <div className="location-picker-map">
-        <MapContainer
-          center={defaultCenter}
-          zoom={zoom}
-          style={{ height: '100%', width: '100%' }}
-          scrollWheelZoom={true}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <LocationMarker position={position} onSelect={handleMapClick} />
-        </MapContainer>
+        <div ref={mapRef} style={{ height: '100%', width: '100%' }} />
       </div>
       
       {address && (
