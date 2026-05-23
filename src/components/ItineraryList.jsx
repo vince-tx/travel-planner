@@ -85,18 +85,32 @@ export default function ItineraryList({ tripId, onRefresh }) {
     onRefresh?.();
   };
 
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  };
+
   const handleNavigate = (item) => {
     const location = encodeURIComponent(item.location);
-    const amapUrl = `amapuri://route/plan?dname=${location}&dev=0`;
-    const webUrl = `https://uri.amap.com/navigation?to=${location}&mode=car&coordinate=gaode&callnative=1`;
+    let amapUrl;
+    let webUrl;
+    
+    if (item.coords) {
+      amapUrl = `amapuri://route/plan?dlat=${item.coords.lat}&dlon=${item.coords.lng}&dname=${location}&dev=0&t=0`;
+      webUrl = `https://uri.amap.com/navigation?to=${item.coords.lat},${item.coords.lng},${location}&mode=car`;
+    } else {
+      amapUrl = `amapuri://route/plan?dname=${location}&dev=0&t=0`;
+      webUrl = `https://uri.amap.com/navigation?to=${location}&mode=car`;
+    }
     
     const link = document.createElement('a');
     link.href = amapUrl;
     link.click();
     
-    setTimeout(() => {
-      window.location.href = webUrl;
-    }, 500);
+    if (!isMobile()) {
+      setTimeout(() => {
+        window.location.href = webUrl;
+      }, 800);
+    }
   };
 
   const getDefaultDateTime = () => {
