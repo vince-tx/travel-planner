@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
+import { Wallet, X } from 'lucide-react';
 import { getBudgetsByTripId, createBudget, addExpense, deleteBudget } from '../db/budgets';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
-import { EmptyIcon } from './Icons';
 import './Budget.css';
 
 const DEFAULT_CATEGORIES = ['交通', '住宿', '餐饮', '门票', '购物', '其他'];
@@ -97,7 +97,7 @@ export default function Budget({ tripId, onRefresh }) {
 
       {budgets.length === 0 ? (
         <div className="budget-empty">
-          <EmptyIcon name="wallet" size={64} />
+          <div className="empty-icon"><Wallet size={32} /></div>
           <p>还没有预算规划</p>
         </div>
       ) : (
@@ -109,7 +109,7 @@ export default function Budget({ tripId, onRefresh }) {
               <div key={budget.id} className="budget-item">
                 <div className="budget-item-header">
                   <span className="budget-category">{budget.category}</span>
-                  <button className="budget-delete" onClick={() => handleDelete(budget.id)}>×</button>
+                  <button className="budget-delete" onClick={() => handleDelete(budget.id)}><X size={14} /></button>
                 </div>
                 <div className="budget-item-row">
                   <span>预算: ¥{fmt(budget.budget)}</span>

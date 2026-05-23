@@ -20,12 +20,12 @@
 }
 .tab-item.active { color: #667eea; font-weight: 600; }
 .tab-item.active::after { width: 32px; }
-.tab-item svg { opacity: 0.6; transition: opacity 0.2s; }
-.tab-item.active svg { opacity: 1; }
 .tab-icon { font-size: 18px; }
 
 /* ===== 深色模式 ===== */
 .dark .tab-bar { background: rgba(26, 26, 36, 0.85); border-top-color: rgba(255, 255, 255, 0.05); }
-.dark .tab-item { color: #555; }
+.dark .tab-item { color: #666; }
+.dark .tab-item svg { color: #777; }
 .dark .tab-item.active { color: #8b9cf7; }
+.dark .tab-item.active svg { color: #8b9cf7; }
 .dark .tab-item::after { background: linear-gradient(90deg, #8b9cf7, #a78bfa); }

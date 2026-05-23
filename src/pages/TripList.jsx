@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
+import { Settings, Plane } from 'lucide-react';
 import { getAllTrips, createTrip, deleteTrip } from '../db/trips';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import SettingsPanel from '../components/SettingsPanel';
 import AreaSelector from '../components/AreaSelector';
-import { EmptyIcon } from '../components/Icons';
 import './TripList.css';
 
 const hasFormData = (data) => data.destination || data.startDate || data.endDate;
@@ -72,7 +72,7 @@ export default function TripList({ onSelectTrip }) {
       <div className="trip-list-header">
         <div className="trip-list-header-row">
           <h1>我的旅行</h1>
-          <button className="trip-list-settings-btn" onClick={() => setSettingsOpen(true)}>⚙</button>
+          <button className="trip-list-settings-btn" onClick={() => setSettingsOpen(true)}><Settings size={18} /></button>
         </div>
         <p>{trips.length} 趟旅行计划中</p>
       </div>
@@ -80,7 +80,7 @@ export default function TripList({ onSelectTrip }) {
       <div className="trip-list">
         {trips.length === 0 ? (
           <div className="trip-list-empty">
-            <EmptyIcon name="plane" size={64} />
+            <div className="empty-icon"><Plane size={40} /></div>
             <p>还没有旅行计划</p>
             <p>点击下方按钮创建第一个旅行</p>
           </div>

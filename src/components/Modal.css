@@ -19,7 +19,14 @@
   padding: 20px 24px; border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   position: sticky; top: 0; background: #fff; z-index: 1;
 }
-.modal-header h3 { font-size: 17px; font-weight: 700; color: #1a1a1a; letter-spacing: -0.01em; }
+.modal-header h3 { font-size: 17px; font-weight: 700; color: #1a1a1a; letter-spacing: -0.01em; flex-shrink: 0; }
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  margin-right: 12px;
+}
 .modal-close {
   width: 32px; height: 32px; border: none; background: rgba(0, 0, 0, 0.05);
   font-size: 18px; color: #888; cursor: pointer; border-radius: 50%;
@@ -48,5 +55,6 @@
 .dark .modal-content { background: #1a1a24; box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.3); }
 .dark .modal-header { border-bottom-color: rgba(255, 255, 255, 0.05); background: #1a1a24; }
 .dark .modal-header h3 { color: #e8e8ed; }
+.dark .modal-header-actions { background: transparent; }
 .dark .modal-close { background: rgba(255, 255, 255, 0.06); color: #888; }
 .dark .modal-close:hover { background: rgba(255, 255, 255, 0.1); }

@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { MapPin, Calendar, Check, X, Navigation } from 'lucide-react';
 import { getItinerariesByTripId, createItinerary, updateItinerary, deleteItinerary } from '../db/itineraries';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
 import LocationPicker from './LocationPicker';
-import { AppIcon, EmptyIcon } from './Icons';
 import './ItineraryList.css';
 
 export default function ItineraryList({ tripId, onRefresh }) {
@@ -15,6 +15,7 @@ export default function ItineraryList({ tripId, onRefresh }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [editingData, setEditingData] = useState({});
   const [showLocationPicker, setShowLocationPicker] = useState(false);
+  const formRef = useRef(null);
 
   useEffect(() => { setItems(getItinerariesByTripId(tripId)); }, [tripId]);
 
@@ -150,7 +151,7 @@ export default function ItineraryList({ tripId, onRefresh }) {
     <div className="itinerary-list">
       {items.length === 0 && !editingId ? (
         <div className="itinerary-empty">
-          <EmptyIcon name="calendar" size={64} />
+          <div className="empty-icon"><Calendar size={32} /></div>
           <p>还没有行程安排</p>
         </div>
       ) : (
@@ -201,7 +202,7 @@ export default function ItineraryList({ tripId, onRefresh }) {
                             onClick={() => setShowLocationPicker(!showLocationPicker)}
                             title="地图选点"
                           >
-                            <AppIcon name="mapPin" size={16} />
+                            <MapPin size={16} />
                           </button>
                         </div>
                         
@@ -228,16 +229,14 @@ export default function ItineraryList({ tripId, onRefresh }) {
                         />
                       </div>
                       <div className="itinerary-edit-actions">
-                        <button type="button" className="itinerary-save" onClick={handleSaveEdit}>✓</button>
-                        <button type="button" className="itinerary-cancel" onClick={handleCancelEdit}>×</button>
+                        <button type="button" className="itinerary-save" onClick={handleSaveEdit}><Check size={16} /></button>
+                        <button type="button" className="itinerary-cancel" onClick={handleCancelEdit}><X size={16} /></button>
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="itinerary-time">{item.time || '--:--'}</div>
-                      <div className="itinerary-dot">
-                        <AppIcon name="mapPin" size={16} />
-                      </div>
+                      <div className="itinerary-dot"><MapPin size={14} /></div>
                       <div className="itinerary-content" onClick={() => handleEdit(item)}>
                         <div className="itinerary-title">{item.title}</div>
                         {item.location && <div className="itinerary-location">{item.location}</div>}
@@ -252,10 +251,10 @@ export default function ItineraryList({ tripId, onRefresh }) {
                           }}
                           title="导航"
                         >
-                          <AppIcon name="compass" size={18} />
+                          <Navigation size={14} />
                         </button>
                       )}
-                      <button className="itinerary-delete" onClick={() => handleDelete(item.id)}>×</button>
+                      <button className="itinerary-delete" onClick={() => handleDelete(item.id)}><X size={16} /></button>
                     </>
                   )}
                 </div>
@@ -269,8 +268,17 @@ export default function ItineraryList({ tripId, onRefresh }) {
         isOpen={modalAddOpen}
         title="添加行程"
         onClose={handleCloseAddModal}
+        actions={
+          <button 
+            type="button" 
+            className="modal-submit-btn"
+            onClick={() => formRef.current?.requestSubmit()}
+          >
+            添加
+          </button>
+        }
       >
-        <form onSubmit={handleAddSubmit} className="modal-form">
+        <form ref={formRef} onSubmit={handleAddSubmit} className="modal-form">
           <div className="form-row">
             <div className="form-group">
               <label>日期</label>
@@ -326,7 +334,7 @@ export default function ItineraryList({ tripId, onRefresh }) {
                     onClick={() => setShowLocationPicker(!showLocationPicker)}
                     title="地图选点"
                   >
-                    <AppIcon name="mapPin" size={16} />
+                    <MapPin size={16} />
                   </button>
                 </div>
               </div>
@@ -363,7 +371,6 @@ export default function ItineraryList({ tripId, onRefresh }) {
               </button>
             </div>
           )}
-          <button type="submit" className="modal-submit-btn">添加</button>
         </form>
       </Modal>
 

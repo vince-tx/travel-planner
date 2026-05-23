@@ -100,7 +100,8 @@
 }
 .dark .progress-info { color: #666; }
 .dark .progress-bar-bg { background: #2a2a35; }
-.dark .checklist-empty { color: #555; }
+.dark .checklist-empty { color: #888; }
+.dark .checklist-empty .empty-icon { color: #8b9cf7; }
 .dark .checklist-category {
   background: #1a1a24; border-color: rgba(255, 255, 255, 0.04);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1);

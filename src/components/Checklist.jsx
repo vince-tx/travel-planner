@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
+import { ListChecks, X } from 'lucide-react';
 import { getChecklistsByTripId, createChecklistItem, toggleChecklistItem, deleteChecklistItem } from '../db/checklists';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
-import { EmptyIcon } from './Icons';
 import './Checklist.css';
 
 const DEFAULT_CATEGORIES = ['衣物', '证件', '洗漱', '电子设备', '药品', '其他'];
@@ -95,7 +95,7 @@ export default function Checklist({ tripId, onRefresh }) {
 
       {items.length === 0 ? (
         <div className="checklist-empty">
-          <EmptyIcon name="checklist" size={64} />
+          <div className="empty-icon"><ListChecks size={32} /></div>
           <p>还没有清单</p>
         </div>
       ) : (
@@ -113,7 +113,7 @@ export default function Checklist({ tripId, onRefresh }) {
                     <span className="checkmark"></span>
                   </label>
                   <span className="item-name">{item.item}</span>
-                  <button className="item-delete" onClick={() => handleDelete(item.id)}>×</button>
+                  <button className="item-delete" onClick={() => handleDelete(item.id)}><X size={14} /></button>
                 </div>
               ))}
             </div>

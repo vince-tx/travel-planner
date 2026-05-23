@@ -111,7 +111,8 @@
 .dark .summary-value { color: #34d399; }
 .dark .summary-value.spent { color: #fbbf24; }
 .dark .summary-value.overspent { color: #f87171; }
-.dark .budget-empty { color: #555; }
+.dark .budget-empty { color: #888; }
+.dark .budget-empty .empty-icon { color: #34d399; }
 .dark .budget-item {
   background: #1a1a24; border-color: rgba(255, 255, 255, 0.04);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1);

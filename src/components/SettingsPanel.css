@@ -46,14 +46,8 @@
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
 }
 .theme-option-icon { font-size: 20px; }
-.theme-option svg { opacity: 0.6; transition: opacity 0.2s; }
-.theme-option:hover svg,
-.theme-option.active svg { opacity: 1; }
 .theme-option-label { font-weight: 500; }
 .theme-option.active .theme-option-label { color: #667eea; font-weight: 600; }
-
-.dark .theme-option svg { color: #888; }
-.dark .theme-option.active svg { color: #8b9cf7; }
 
 /* ===== 深色模式 ===== */
 .dark .settings-panel { background: #1a1a24; box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3); }
