@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { Settings, Plane } from 'lucide-react';
+import { Settings, Plane, Cloud } from 'lucide-react';
 import { getAllTrips, createTrip, deleteTrip } from '../db/trips';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import SettingsPanel from '../components/SettingsPanel';
 import AreaSelector from '../components/AreaSelector';
+import { fetchWeather, getWeatherIcon, getCityCodeFromDestination } from '../services/weather';
 import './TripList.css';
 
 const hasFormData = (data) => data.destination || data.startDate || data.endDate;
@@ -12,23 +13,45 @@ const hasFormData = (data) => data.destination || data.startDate || data.endDate
 export default function TripList({ onSelectTrip }) {
   const [trips, setTrips] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ name: '', destination: '', startDate: '', endDate: '' });
+  const [formData, setFormData] = useState({ name: '', destination: '', cityCode: '', startDate: '', endDate: '' });
   const [confirm, setConfirm] = useState({ open: false, id: null });
   const [discardConfirm, setDiscardConfirm] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [weatherData, setWeatherData] = useState({});
   const dirtyRef = useRef(false);
 
   const loadTrips = () => setTrips(getAllTrips());
 
   useEffect(() => { loadTrips(); }, []);
 
+  useEffect(() => {
+    const fetchAllWeather = async () => {
+      const newWeatherData = {};
+      for (const trip of trips) {
+        const cityCode = trip.cityCode || getCityCodeFromDestination(trip.destination);
+        if (cityCode) {
+          const weather = await fetchWeather(cityCode);
+          if (weather) {
+            newWeatherData[trip.id] = weather;
+          }
+        }
+      }
+      setWeatherData(newWeatherData);
+    };
+    fetchAllWeather();
+  }, [trips]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     createTrip(formData);
-    setFormData({ name: '', destination: '', startDate: '', endDate: '' });
+    setFormData({ name: '', destination: '', cityCode: '', startDate: '', endDate: '' });
     dirtyRef.current = false;
     setShowModal(false);
     loadTrips();
+  };
+
+  const handleCityCodeChange = (cityCode) => {
+    setFormData(prev => ({ ...prev, cityCode }));
   };
 
   const handleDelete = (id, e) => {
@@ -85,17 +108,28 @@ export default function TripList({ onSelectTrip }) {
             <p>点击下方按钮创建第一个旅行</p>
           </div>
         ) : (
-          trips.map(trip => (
-            <div key={trip.id} className="trip-card" onClick={() => onSelectTrip(trip.id)}>
-              <div className="trip-card-header">
-                <h3>{trip.name}</h3>
-                <button className="trip-card-delete" onClick={(e) => handleDelete(trip.id, e)}>删除</button>
-              </div>
-              <div className="trip-card-destination">{trip.destination}</div>
-              <div className="trip-card-dates">{trip.startDate} - {trip.endDate}</div>
-              <div className="trip-card-days">{getDaysRemaining(trip.startDate)}</div>
-            </div>
-          ))
+          trips.map(trip => {
+              const weather = weatherData[trip.id];
+              return (
+                <div key={trip.id} className="trip-card" onClick={() => onSelectTrip(trip.id)}>
+                  <div className="trip-card-header">
+                    <h3>{trip.name}</h3>
+                    <button className="trip-card-delete" onClick={(e) => handleDelete(trip.id, e)}>删除</button>
+                  </div>
+                  <div className="trip-card-row">
+                    <div className="trip-card-destination">{trip.destination}</div>
+                    {weather && (
+                      <div className="trip-card-weather">
+                        <span className="weather-icon">{getWeatherIcon(weather.weather)}</span>
+                        <span className="weather-info">{weather.temperature}°C · {weather.weather}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="trip-card-dates">{trip.startDate} - {trip.endDate}</div>
+                  <div className="trip-card-days">{getDaysRemaining(trip.startDate)}</div>
+                </div>
+              );
+            })
         )}
       </div>
 
@@ -104,7 +138,7 @@ export default function TripList({ onSelectTrip }) {
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
         const formatDate = (date) => date.toISOString().split('T')[0];
-        setFormData({ name: '', destination: '', startDate: formatDate(today), endDate: formatDate(tomorrow) }); 
+        setFormData({ name: '', destination: '', cityCode: '', startDate: formatDate(today), endDate: formatDate(tomorrow) }); 
         dirtyRef.current = false; 
         setShowModal(true); 
       }}>+ 创建旅行</button>
@@ -121,6 +155,7 @@ export default function TripList({ onSelectTrip }) {
                 setFormData({...formData, destination: value, name}); 
                 dirtyRef.current = true; 
               }} 
+              onCityCodeChange={handleCityCodeChange}
             />
           </div>
           <div className="form-row">

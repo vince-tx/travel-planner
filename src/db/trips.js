@@ -20,6 +20,7 @@ export function createTrip(trip) {
     id,
     name: trip.name,
     destination: trip.destination || '',
+    cityCode: trip.cityCode || '',
     startDate: trip.startDate || '',
     endDate: trip.endDate || '',
     createdAt: new Date().toISOString()

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import areaData from 'china-area-data/data.json';
 import './AreaSelector.css';
 
-export default function AreaSelector({ value, onChange, className }) {
+export default function AreaSelector({ value, onChange, className, onCityCodeChange }) {
   const [province, setProvince] = useState('');
   const [city, setCity] = useState('');
   const [area, setArea] = useState('');
@@ -41,19 +41,23 @@ export default function AreaSelector({ value, onChange, className }) {
           const firstArea = areaNames[0];
           setArea(firstArea);
           onChange(`${newProvince}/${firstCity}/${firstArea}`);
+          onCityCodeChange && onCityCodeChange(cityCode);
         } else {
           setArea('');
           onChange(`${newProvince}/${firstCity}`);
+          onCityCodeChange && onCityCodeChange(cityCode);
         }
       } else {
         setCity('');
         setArea('');
         onChange(newProvince);
+        onCityCodeChange && onCityCodeChange(provinceCode);
       }
     } else {
       setCity('');
       setArea('');
       onChange('');
+      onCityCodeChange && onCityCodeChange('');
     }
   };
 
@@ -71,22 +75,30 @@ export default function AreaSelector({ value, onChange, className }) {
         const firstArea = areaNames[0];
         setArea(firstArea);
         onChange(`${province}/${newCity}/${firstArea}`);
+        onCityCodeChange && onCityCodeChange(cityCode);
       } else {
         setArea('');
         onChange(`${province}/${newCity}`);
+        onCityCodeChange && onCityCodeChange(cityCode);
       }
     } else if (province) {
       setArea('');
       onChange(province);
+      const provinceCode = getProvinceCode(province);
+      onCityCodeChange && onCityCodeChange(provinceCode);
     } else {
       setArea('');
       onChange('');
+      onCityCodeChange && onCityCodeChange('');
     }
   };
 
   const handleAreaChange = (e) => {
     const newArea = e.target.value;
     setArea(newArea);
+    const cities = getCities();
+    const cityCode = Object.keys(cities).find(key => cities[key] === city);
+    
     if (province && city && newArea) {
       onChange(`${province}/${city}/${newArea}`);
     } else if (province && city) {
@@ -96,6 +108,7 @@ export default function AreaSelector({ value, onChange, className }) {
     } else {
       onChange('');
     }
+    onCityCodeChange && onCityCodeChange(cityCode);
   };
 
   const provinces = areaData['86'];
