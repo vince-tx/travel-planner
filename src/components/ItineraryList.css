@@ -54,6 +54,15 @@
   font-size: 12px; color: #777; margin-top: 8px; padding-top: 8px;
   border-top: 1px solid rgba(0, 0, 0, 0.05); line-height: 1.5;
 }
+.itinerary-navigate {
+  width: 28px; height: 28px; border: none;
+  background: rgba(34, 197, 94, 0.08); color: #22c55e;
+  border-radius: 8px; cursor: pointer; font-size: 14px; flex-shrink: 0;
+  transition: all 0.2s;
+  margin-right: 4px;
+}
+.itinerary-navigate:hover { background: rgba(34, 197, 94, 0.15); }
+
 .itinerary-delete {
   width: 28px; height: 28px; border: none;
   background: rgba(231, 76, 60, 0.08); color: #e74c3c;
@@ -265,6 +274,9 @@
 .dark .itinerary-location { color: #666; }
 .dark .itinerary-coords { color: #8b9cf7; }
 .dark .itinerary-notes { color: #a0a0b0; border-top-color: rgba(255, 255, 255, 0.05); }
+.dark .itinerary-navigate { background: rgba(74, 222, 128, 0.1); color: #4ade80; }
+.dark .itinerary-navigate:hover { background: rgba(74, 222, 128, 0.18); }
+
 .dark .itinerary-delete { background: rgba(248, 113, 113, 0.1); color: #f87171; }
 .dark .itinerary-delete:hover { background: rgba(248, 113, 113, 0.18); }
 

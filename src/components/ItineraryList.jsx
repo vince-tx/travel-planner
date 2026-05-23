@@ -85,6 +85,20 @@ export default function ItineraryList({ tripId, onRefresh }) {
     onRefresh?.();
   };
 
+  const handleNavigate = (item) => {
+    const location = encodeURIComponent(item.location);
+    const amapUrl = `amapuri://route/plan?dname=${location}&dev=0`;
+    const webUrl = `https://uri.amap.com/navigation?to=${location}&mode=car&coordinate=gaode&callnative=1`;
+    
+    const link = document.createElement('a');
+    link.href = amapUrl;
+    link.click();
+    
+    setTimeout(() => {
+      window.location.href = webUrl;
+    }, 500);
+  };
+
   const getDefaultDateTime = () => {
     const now = new Date();
     const date = now.toISOString().split('T')[0];
@@ -212,6 +226,18 @@ export default function ItineraryList({ tripId, onRefresh }) {
                         {item.location && <div className="itinerary-location">{item.location}</div>}
                         {item.notes && <div className="itinerary-notes">{item.notes}</div>}
                       </div>
+                      {item.location && (
+                        <button 
+                          className="itinerary-navigate" 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleNavigate(item);
+                          }}
+                          title="导航"
+                        >
+                          🧭
+                        </button>
+                      )}
                       <button className="itinerary-delete" onClick={() => handleDelete(item.id)}>×</button>
                     </>
                   )}

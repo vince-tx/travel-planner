@@ -34,6 +34,7 @@ export default function LocationPicker({
   const [address, setAddress] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isMapReady, setIsMapReady] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
 
   useEffect(() => {
     if (!window.AMap) {
@@ -57,6 +58,10 @@ export default function LocationPicker({
     window.AMap.plugin(['AMap.Geocoder', 'AMap.PlaceSearch'], () => {
       console.log('✅ 插件加载完成');
       setIsMapReady(true);
+      
+      if (!position && !value) {
+        getCurrentLocation();
+      }
     });
 
     map.on('click', (e) => {
@@ -103,6 +108,61 @@ export default function LocationPicker({
     }
   }, [value, isMapReady]);
 
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      console.warn('⚠️ 浏览器不支持地理定位');
+      return;
+    }
+
+    setIsLocating(true);
+    console.log('📍 正在获取当前位置...');
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        console.log(`📍 获取到GPS位置: ${latitude}, ${longitude}`);
+        
+        const map = mapInstanceRef.current;
+        if (map) {
+          map.setCenter([longitude, latitude]);
+          map.setZoom(15);
+          addMarker([longitude, latitude]);
+        }
+        
+        setPosition({ lat: latitude, lng: longitude });
+        reverseGeocode(latitude, longitude);
+        setIsLocating(false);
+      },
+      (err) => {
+        console.error('❌ 获取位置失败:', err);
+        setIsLocating(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000
+      }
+    );
+  };
+
+  const reverseGeocode = (lat, lng) => {
+    const geocoder = new window.AMap.Geocoder();
+    geocoder.getAddress([lng, lat], (status, result) => {
+      console.log('🔍 逆地理编码状态:', status);
+      console.log('📍 逆地理编码结果:', result);
+      
+      if (status === 'complete' && result.info === 'OK') {
+        const cleanedAddress = cleanAddress(result.regeocode.formattedAddress);
+        console.log('✅ 获取到地址:', cleanedAddress);
+        setAddress(cleanedAddress);
+        onChange({ lat, lng }, cleanedAddress);
+      } else {
+        console.error('❌ 获取地址失败:', status, result.info);
+        onChange({ lat, lng }, '');
+      }
+    });
+  };
+
   const addMarker = (pos) => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -127,23 +187,7 @@ export default function LocationPicker({
       map.setCenter([lng, lat]);
     }
 
-    const geocoder = new window.AMap.Geocoder();
-    console.log(`🔍 开始逆地理编码: ${lat}, ${lng}`);
-    
-    geocoder.getAddress([lng, lat], (status, result) => {
-      console.log('🔍 逆地理编码状态:', status);
-      console.log('📍 逆地理编码结果:', result);
-      
-      if (status === 'complete' && result.info === 'OK') {
-        const cleanedAddress = cleanAddress(result.regeocode.formattedAddress);
-        console.log('✅ 获取到地址:', cleanedAddress);
-        setAddress(cleanedAddress);
-        onChange(newPos, cleanedAddress);
-      } else {
-        console.error('❌ 获取地址失败:', status, result.info);
-        onChange(newPos, '');
-      }
-    });
+    reverseGeocode(lat, lng);
   };
 
   const handleSearch = () => {
@@ -202,21 +246,19 @@ export default function LocationPicker({
         <div ref={mapRef} style={{ height: '100%', width: '100%' }} />
       </div>
       
-      {address && (
+      {isLocating && (
+        <div className="location-picker-hint">
+          📍 正在获取当前位置...
+        </div>
+      )}
+      
+      {address && !isLocating && (
         <div className="location-picker-address">
           📍 {address}
         </div>
       )}
       
-      {position && (
-        <div className="location-picker-info">
-          <span className="location-coords">
-            坐标: {position.lat.toFixed(4)}, {position.lng.toFixed(4)}
-          </span>
-        </div>
-      )}
-      
-      {!position && (
+      {!position && !isLocating && (
         <div className="location-picker-hint">
           {placeholder}
         </div>
